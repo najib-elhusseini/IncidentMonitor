@@ -1,0 +1,125 @@
+﻿<Window x:Class="IncidentMonitor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:IncidentMonitor.Converters"
+        xmlns:local="clr-namespace:IncidentMonitor"
+        mc:Ignorable="d"
+        ShowActivated="True"
+        WindowState="Maximized"
+        x:Name="IncidentsMonitorMainWindow"
+        Title="MainWindow" Height="600" Width="1024">
+    <Window.Resources>
+        <converters:BooleanNotConverter x:Key="BooleanInverseConverter"/>
+    </Window.Resources>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Logout" Click="LogoutMenuItem_Click"/>
+                <Separator/>
+                <MenuItem Header="Exit" Click="ExitMenuItem_Click"/>
+            </MenuItem>
+            <MenuItem Header="Settings" x:Name="SettingsMenuItem"
+                      IsEnabled="False"
+                      >
+                <MenuItem Header="Company" Click="CompanyMenuItem_Click"/>
+                <MenuItem Header="Users to notify" Click="UsersMenuItem_Click"/>
+                <MenuItem Header="SMTP Settings" Click="SmtpSettingsMenuItem_Click"/>
+                <MenuItem Header="RemedyForce Settings" Click="RemedyForceMenuItem_Clicked"/>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="13*"/>
+                <ColumnDefinition Width="147*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Border BorderBrush="{StaticResource Slate400Brush}" Background="{StaticResource Slate200Brush}" BorderThickness="1" Grid.ColumnSpan="2">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <Image 
+                            Source="pack://application:,,,/Resources/Images/hoist_gear.png" 
+                            Width="32" 
+                            Height="32" 
+                            Margin="10,0"/>
+                        <TextBlock 
+                            VerticalAlignment="Center" 
+                            Text="Incident Monitor" Foreground="{StaticResource Slate700Brush}" 
+                            FontSize="25"/>
+                    </StackPanel>
+                   
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" 
+                                Margin="10,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center">
+                        <Button x:Name="BtnRefresh" Height="35" Width="120" 
+                               IsEnabled="{Binding ElementName=IncidentsMonitorMainWindow,Path=IsLoading,Converter={StaticResource BooleanInverseConverter}}"
+                                Click="BtnRefresh_Click">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="pack://application:,,,/Resources/Images/arrow-clockwise.png"
+                                           Width="20" Height="20" VerticalAlignment="Center"
+                                           />
+                                    <TextBlock VerticalAlignment="Center" FontSize="14" Text="Refresh" Foreground="{StaticResource Blue50Brush}"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button x:Name="BtnNotifyAll" Click="BtnNotifyAll_Click" Height="35" Width="120" Margin="10,0,0,0"
+                                IsEnabled="{Binding ElementName=IncidentsMonitorMainWindow,Path=IsLoading,Converter={StaticResource BooleanInverseConverter}}"
+                                >
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="pack://application:,,,/Resources/Images/envelope-check-fill.png"
+                                            Width="20" Height="20" VerticalAlignment="Center"
+                                           />
+                                    <TextBlock VerticalAlignment="Center"
+                                              
+                                               FontSize="14" Text="Notify all" Foreground="{StaticResource Blue50Brush}"/>
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <DataGrid x:Name="IncidentsGrid" Margin="2,10,2,0" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" Grid.ColumnSpan="2">
+                <DataGrid.Columns>
+                    <DataGridTextColumn FontWeight="Bold" Width="100" IsReadOnly="True" Header="#" Binding="{Binding IncidentName}"/>
+                    <DataGridTextColumn Width="*" IsReadOnly="True" Header="Title" Binding="{Binding Title}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="User" Binding="{Binding Client.Username}"/>
+                    <DataGridTextColumn Header="Queue" Binding="{Binding QueueName}"/>
+                    <DataGridTextColumn Header="Client" Width="120" Binding="{Binding ClientAccountName}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Created at" Binding="{Binding IncidentCreationDate}"/>
+                    <DataGridTextColumn Header="Status" Width="120" Binding="{Binding Status.Name}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Responded" Binding="{Binding RespondedStatus}" Width="50"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </DockPanel>
+
+</Window>

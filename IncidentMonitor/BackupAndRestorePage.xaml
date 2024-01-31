@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IncidentMonitor.BackupAndRestorePage"
+             Title="Backup &amp; Restore">
+    <Border WidthRequest="500"  Stroke="{StaticResource Slate300}"
+            HorizontalOptions="Center" VerticalOptions="Center" >
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="5"/>
+        </Border.StrokeShape>
+        <VerticalStackLayout Spacing="5">
+            <VerticalStackLayout Spacing="10" Padding="0,10,0,0" BackgroundColor="{StaticResource Slate50}" >
+                <HorizontalStackLayout Spacing="15" HorizontalOptions="Center">
+                    <Image HeightRequest="30">
+                    <Image.Source>
+                        <FontImageSource Glyph="&#xebba;" Size="40" 
+                                         Color="{StaticResource Slate600}" FontFamily="BootStrap"/>
+                    </Image.Source>
+                </Image>                    
+                <Label Text="Backup &amp; Restore " 
+                       TextColor="{StaticResource Slate600}"
+                       FontSize="Title" 
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center"/>
+               
+                </HorizontalStackLayout>
+                 <Line HeightRequest="2" BackgroundColor="{StaticResource Slate500}"/>
+            </VerticalStackLayout>
+            <HorizontalStackLayout Spacing="10" Padding="10,0,0,0" HorizontalOptions="Center">
+                <!--<Label Text="Select a task" VerticalOptions="Center"/>-->
+                <RadioButton Content="Backup" VerticalOptions="Center" IsChecked="True"
+                 Value="backup"
+                 CheckedChanged="RadioButton_CheckedChanged" Margin="0"
+                 RadioButtonGroup.GroupName="Task"/>
+                <RadioButton Content="Restore" VerticalOptions="Center"
+                         Value="restore"
+                     CheckedChanged="RadioButton_CheckedChanged"
+                     RadioButtonGroup.GroupName="Task"/>    
+            </HorizontalStackLayout>
+
+
+            <Grid ColumnSpacing="5" Padding="5" RowSpacing="10" RowDefinitions="*,*">
+                <Button x:Name="ActionButton" Grid.Column="1" Text="Select Location"  
+                        Clicked="PickFileButton_Clicked" >
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="BootStrap" 
+                                         Glyph="&#xed37;" 
+                                         Color="{StaticResource Blue50}"
+                                         Size="25"
+                                         />
+                    </Button.ImageSource>
+                </Button>
+                <Label x:Name="ResultsLabel" TextColor="{StaticResource Red500}" Grid.Row="1" Grid.ColumnSpan="2"/>
+            </Grid>
+            
+        </VerticalStackLayout>
+    </Border>
+</ContentPage>

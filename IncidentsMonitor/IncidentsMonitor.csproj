@@ -1,0 +1,57 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>IncidentMonitor</RootNamespace>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Images\arrow-clockwise.png" />
+    <None Remove="Resources\Images\buildings-fill.png" />
+    <None Remove="Resources\Images\envelope-check-fill.png" />
+    <None Remove="Resources\Images\envelope_at_fill.png" />
+    <None Remove="Resources\Images\floppy-fill.png" />
+    <None Remove="Resources\Images\hoist_gear.png" />
+    <None Remove="Resources\Images\key-fill.png" />
+    <None Remove="Resources\Images\person-exclamation.png" />
+    <None Remove="Resources\Images\plus-circle-fill.png" />
+    <None Remove="Resources\Images\sliders.png" />
+    <None Remove="Resources\Images\trash3-fill.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IncidentMonitor.DataLayer\IncidentMonitor.DataLayer.csproj" />
+    <ProjectReference Include="..\IncidentMonitor.Models\IncidentMonitor.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\arrow-clockwise.png" />
+    <Resource Include="Resources\Images\buildings-fill.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\envelope-check-fill.png" />
+    <Resource Include="Resources\Images\envelope_at_fill.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\floppy-fill.png" />
+    <Resource Include="Resources\Images\hoist_gear.png" />
+    <Resource Include="Resources\Images\key-fill.png" />
+    <Resource Include="Resources\Images\person-exclamation.png" />
+    <Resource Include="Resources\Images\plus-circle-fill.png" />
+    <Resource Include="Resources\Images\sliders.png" />
+    <Resource Include="Resources\Images\trash3-fill.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
+</Project>

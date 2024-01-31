@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IncidentMonitor.Companies"
+             x:Name="CompaniesPage"
+             BindingContext="{x:Reference CompaniesPage}"
+             Title="Companies">
+    <Grid ColumnDefinitions="30*,70*" ColumnSpacing="20" Padding="5">
+        <VerticalStackLayout Grid.Column="0">
+            <HorizontalStackLayout>
+                <Button x:Name="AddNewButton" Text="New Company" Clicked="AddNewButton_Clicked"/>
+                <Button x:Name="RefreshButton" Text="Refresh" Clicked="RefreshButton_Clicked"/>
+            </HorizontalStackLayout>
+            <CollectionView x:Name="CompaniesCollectionView"
+                            BindingContext="{x:Reference CompaniesPage}" 
+                            ItemsSource="{Binding CompaniesList}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="9*,3*">
+                            <Label Text="{Binding CompanyName}" VerticalOptions="Center"/>
+                            <Button x:Name="SelectButton" Grid.Column="1" Text="Select" Clicked="SelectButton_Clicked">
+                                
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+
+        <Border      
+            BindingContext="{x:Reference CompaniesPage}"
+            Grid.Column="1" 
+            WidthRequest="600" 
+            Padding="15"
+            VerticalOptions="Start"
+            HorizontalOptions="Start">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="10"/>
+            </Border.StrokeShape>
+
+            <VerticalStackLayout x:Name="SelectedCompanyLayout" BindingContext="{Binding SelectedCompany}" Spacing="10">
+                <VerticalStackLayout.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="Margin" Value="0,10"/>
+                    </Style>
+                </VerticalStackLayout.Resources>
+                <VerticalStackLayout>
+                    <Label>
+                        Company Name
+                    </Label>
+                    <Entry Text="{Binding CompanyName}"/>
+                </VerticalStackLayout>
+                <Grid ColumnDefinitions="*,*,*,*" RowDefinitions="*,*" ColumnSpacing="5" >
+                    <Label Text="Shift Start Time" Grid.ColumnSpan="2"/>
+                    <Entry Grid.Row="1" Grid.Column="0" Text="{Binding ShiftStartHours}" Placeholder="HH"/>
+                    <Entry Grid.Row="1" Grid.Column="1" Text="{Binding ShiftStartMinutes}" Placeholder="MM"/>
+
+                    <Label Text="Shift End Time" Grid.Column="2" Grid.ColumnSpan="2" />
+                    <Entry Grid.Row="1" Grid.Column="2" Text="{Binding ShiftEndHours}" Placeholder="HH"/>
+                    <Entry Grid.Row="1" Grid.Column="3" Text="{Binding ShiftEndMinutes}" Placeholder="MM"/>
+
+                </Grid>
+
+                <HorizontalStackLayout>
+                    <CheckBox IsChecked="{Binding IsDefaultCompany}"></CheckBox>
+                    <Label>Is Default</Label>
+                </HorizontalStackLayout>
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button x:Name="BtnSave" Text="Save" Clicked="BtnSave_Clicked"/>
+                    <Button x:Name="BtnDelete" 
+                        Text="Delete" Grid.Column="1" 
+                        Background="{StaticResource Red500}"
+                        Clicked="BtnDelete_Clicked"
+                        />      
+                </Grid>
+
+            </VerticalStackLayout>
+            
+        </Border>
+
+    </Grid>
+</ContentPage>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="IncidentMonitor.SmtpSettingsPage"
+             x:Name="SmptSettingsContentPage"
+             BindingContext="{x:Reference SmptSettingsContentPage}"
+             
+            
+    Title="SMTP Configuration">
+    
+    
+    <Border Padding="15" VerticalOptions="Center" HorizontalOptions="Center" BackgroundColor="{StaticResource White}">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="5"/>
+        </Border.StrokeShape>
+        <VerticalStackLayout WidthRequest="500" Spacing="10">
+            <Label FontSize="Title" VerticalOptions="Center">
+                SMTP Settings
+            </Label>
+            <Line BackgroundColor="{StaticResource Gray500}" HeightRequest="2"/>
+            <Label>
+                SMTP Server
+            </Label>
+            <Entry Text="{Binding EmailConfiguration.SmtpClientName}"/>
+            <Label>
+                User Name
+            </Label>
+            <Entry Text="{Binding EmailConfiguration.UserName}"/>
+            <Label>
+                Password
+            </Label>
+            <Entry Text="{Binding EmailConfiguration.Password}" Placeholder="Password"/>
+            <Grid ColumnDefinitions="*,*" RowDefinitions="*,*" RowSpacing="10" ColumnSpacing="5">
+                <HorizontalStackLayout VerticalOptions="End">
+                    
+                <CheckBox IsChecked="{Binding EmailConfiguration.EnableSsl}" VerticalOptions="Center"/>
+                <Label VerticalOptions="Center" >
+                    Enable SSL
+                </Label>
+            </HorizontalStackLayout>
+                <VerticalStackLayout Grid.Column="1" Spacing="10">
+                    <Label>
+                        Port Number
+                    </Label>
+                    <Entry Text="{Binding EmailConfiguration.SmtpPort}"/>
+                </VerticalStackLayout>
+                <Button Clicked="SaveSmtpConfigButton_Clicked"
+                        IsEnabled="{Binding IsLoading,Converter={StaticResource BooleanInverseConverter}}"
+                        Grid.Row="1" Grid.Column="0" x:Name="SaveSmtpConfigButton">
+                    <Button.Text>
+                        Save Changes
+                    </Button.Text>
+                </Button>
+                <Button x:Name="TestSmtpConfigButton" 
+                        Grid.Row="1" Grid.Column="1" Text="Test Settings" 
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Clicked="TestSmtpConfigButton_Clicked"
+                        IsEnabled="{Binding IsLoading,Converter={StaticResource BooleanInverseConverter}}"
+                        >
+                    
+                </Button>
+            </Grid>
+            
+
+        </VerticalStackLayout>
+    </Border>
+
+</ContentPage>

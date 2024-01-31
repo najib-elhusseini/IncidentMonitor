@@ -1,0 +1,90 @@
+﻿<Window x:Class="IncidentMonitor.Settings.SmtpSettingsWindow"
+        xmlns:convertes="clr-namespace:IncidentMonitor.Converters"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IncidentMonitor.Settings"
+        mc:Ignorable="d"
+        x:Name="SmtpConfigWindow"
+        WindowStyle="ToolWindow" 
+        ResizeMode="NoResize" 
+        WindowStartupLocation="CenterOwner"
+        Title="SMTP Settings" Height="330" Width="500">
+    <Window.Resources>
+        <convertes:BooleanNotConverter x:Key="BooleanInverseConverter"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50*"/>
+            <ColumnDefinition Width="50*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0"            
+                Orientation="Horizontal"
+                Background="{StaticResource Blue500Brush}" 
+                Grid.ColumnSpan="4">
+            <Image Source="pack://application:,,,/Resources/Images/envelope_at_fill.png" 
+                       Width="32" 
+                       Height="32" 
+                       Stretch="UniformToFill"
+                       VerticalAlignment="Center"
+                       Margin="15,0,0,0"
+                />
+            <TextBlock Margin="15,0" VerticalAlignment="Center" 
+                        Text="SMTP Configuration" Foreground="{StaticResource Blue50Brush}" FontSize="25"/>
+        </StackPanel>
+        <TextBlock 
+                Grid.Row="1" 
+                Text="Smtp Server" 
+                VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.ColumnSpan="2"
+                 Margin="4,2" 
+                 Text="{Binding ElementName=SmtpConfigWindow,Path=EmailConfiguration.SmtpClientName}"/>
+        <TextBlock Grid.Row="3" Text="User Name"/>
+        <TextBox Grid.Row="4" Margin="4,2" Text="{Binding ElementName=SmtpConfigWindow,Path=EmailConfiguration.UserName}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Text="Password"/>
+        <TextBox Grid.Row="4" Grid.Column="1"
+                 Text="{Binding ElementName=SmtpConfigWindow,Path=EmailConfiguration.Password}"
+                 Margin="4,2"
+                 />
+        <CheckBox
+            VerticalAlignment="Center"
+            Grid.Row="6" IsChecked="{Binding ElementName=SmtpConfigWindow,Path=EmailConfiguration.EnableSsl}"            
+            Content="Enable SSL" Margin="4,2"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="1"  Text="Port"/>
+        <TextBox Grid.Row="6" Grid.Column="1"
+                 Text="{Binding ElementName=SmtpConfigWindow,Path=EmailConfiguration.SmtpPort}" Margin="4,2"/>
+
+        <Button Grid.Column="0" Grid.Row="7" 
+                IsEnabled="{Binding ElementName=SmtpConfigWindow,Path=IsLoading,Converter={StaticResource BooleanInverseConverter}}"
+                Margin="5" x:Name="BtnSave" Click="BtnSave_Click">
+            <Button.Content>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Save changes" Foreground="{StaticResource Blue50Brush}"/>
+                </StackPanel>
+            </Button.Content>
+        </Button>
+        <Button Grid.Column="1" Grid.Row="9" Margin="5" x:Name="BtnTestSettings" 
+                Style="{StaticResource SecondaryButtonStyle}"
+                Click="BtnTestSettings_Click"
+                IsEnabled="{Binding ElementName=SmtpConfigWindow,Path=IsLoading,Converter={StaticResource BooleanInverseConverter}}"
+        >
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Test Settings" Foreground="{StaticResource Slate50Brush}"/>
+            </StackPanel>
+        </Button>
+
+
+    </Grid>
+</Window>
