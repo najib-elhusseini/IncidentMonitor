@@ -13,14 +13,17 @@ namespace IncidentMonitor.DataLayer.Helpers
 {
     public class NotificationUsersHelper : EntityHelper<NotificationUser, int>
     {
-        private byte[] IV => new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16 };
-        private string _key = "UwVQBuUMvI/7rLnFnYGD7w==";
-        private byte[] _keyBuffer => Convert.FromBase64String(_key);
+        private byte[] IV => new byte[] { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16 };       
+        
         private string _passPhrase = "Hoist-pass-1234-12";
 
+        #region Ctor
         public NotificationUsersHelper(DataContext context) : base(context)
         {
         }
+        #endregion
+
+        #region Overrides
 
         public override async Task<NotificationUser> Find(int key)
         {
@@ -32,14 +35,12 @@ namespace IncidentMonitor.DataLayer.Helpers
             }
             var user = result[0];
             if (user.AppPassword != null)
-            {                
+            {
                 user.AppPassword = await DecryptAsync(user.AppPassword);
             }
             return user;
 
         }
-
-
 
         public override async Task<List<NotificationUser>> GetAllAsync()
         {
@@ -67,7 +68,8 @@ namespace IncidentMonitor.DataLayer.Helpers
             }
 
             return users;
-        }
+        } 
+        #endregion
 
         public async Task<IEnumerable<NotificationUser>> GetUsersToNotifyAsync()
         {
