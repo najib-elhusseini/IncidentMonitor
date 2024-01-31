@@ -95,15 +95,16 @@ namespace IncidentMonitor.Settings
                 {
                     var encryptedBytes = await _helper.EncryptAsync(user.AppPassword);
                     var encrypted = Convert.ToBase64String(encryptedBytes);
-                    user.AppPassword = encrypted;
-                    //var decriptedBytes = Convert.FromBase64String(encrypted);
-                    //var decrypted = await _helper.DecryptAsync(decriptedBytes);
+                    user.AppPassword = encrypted;                   
                 }
                 await _helper.UpdateAsync(user);
             }
             GetUsers();
         }
 
-
+        private  void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            GetUsers();
+        }
     }
 }

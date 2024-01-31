@@ -49,7 +49,7 @@ namespace IncidentMonitor
 
             if (NewPasswordBox.Password != ConfirmPasswordBox.Password)
             {
-                ErrorTextBlock.Text = "The 'New Passwrd' and 'Confirm Password' fields do not match";
+                ErrorTextBlock.Text = "The 'New Password' and 'Confirm Password' fields do not match";
                 return;
             }
             var encrypted = await Helper.EncryptAsync(NewPasswordBox.Password);

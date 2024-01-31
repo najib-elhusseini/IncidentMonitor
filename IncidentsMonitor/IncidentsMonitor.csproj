@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Images\arrow-clockwise-green.png" />
     <None Remove="Resources\Images\arrow-clockwise.png" />
     <None Remove="Resources\Images\buildings-fill.png" />
     <None Remove="Resources\Images\envelope-check-fill.png" />
@@ -34,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Images\arrow-clockwise-green.png" />
     <Resource Include="Resources\Images\arrow-clockwise.png" />
     <Resource Include="Resources\Images\buildings-fill.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
