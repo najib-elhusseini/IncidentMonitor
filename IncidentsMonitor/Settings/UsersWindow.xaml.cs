@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -41,7 +42,16 @@ namespace IncidentMonitor.Settings
             {
                 if (user.AppPassword != null)
                 {
-                    user.AppPassword = await _helper.DecryptEncodedAsync(user.AppPassword);
+                    try
+                    {
+                        var converted = Convert.FromBase64String(user.AppPassword);
+                        user.AppPassword = await _helper.DecryptAsync(converted);
+                    }
+                    catch (Exception ex)
+                    {
+                        user.AppPassword = "Error";
+                    }
+
                 }
                 Users.Add(user);
             }
@@ -83,7 +93,11 @@ namespace IncidentMonitor.Settings
             {
                 if (!string.IsNullOrEmpty(user.AppPassword))
                 {
-                    user.AppPassword = await _helper.EncryptAndEncodeAsync(user.AppPassword);
+                    var encryptedBytes = await _helper.EncryptAsync(user.AppPassword);
+                    var encrypted = Convert.ToBase64String(encryptedBytes);
+                    user.AppPassword = encrypted;
+                    //var decriptedBytes = Convert.FromBase64String(encrypted);
+                    //var decrypted = await _helper.DecryptAsync(decriptedBytes);
                 }
                 await _helper.UpdateAsync(user);
             }

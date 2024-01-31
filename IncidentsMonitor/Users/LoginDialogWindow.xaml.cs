@@ -68,7 +68,7 @@ namespace IncidentMonitor
         }
 
         async void Login()
-        {
+        {           
             if (string.IsNullOrEmpty(PasswordTextBox.Password) || string.IsNullOrEmpty(UsernameTextBox.Text))
             {
                 ResultsTextBlock.Text = "Please enter a user name and password";

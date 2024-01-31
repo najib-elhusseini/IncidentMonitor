@@ -69,6 +69,7 @@
         <Setter Property="Foreground" Value="{StaticResource Blue50Brush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource Blue500Brush}"/>
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="MinHeight" Value="30"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

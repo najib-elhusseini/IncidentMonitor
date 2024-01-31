@@ -115,7 +115,8 @@ namespace IncidentMonitor
             get => _loggedInUser; set
             {
                 _loggedInUser = value;
-                SettingsMenuItem.IsEnabled = _loggedInUser?.IsSuperUser == true;
+                //SettingsMenuItem.IsEnabled = _loggedInUser?.IsSuperUser == true;
+                SettingsMenuItem.IsEnabled = true;// _loggedInUser?.IsSuperUser == true;
             }
         }
 
@@ -133,7 +134,7 @@ namespace IncidentMonitor
             Timer = new DispatcherTimer();
             InitializeComponent();
 
-        } 
+        }
         #endregion
 
         protected override void OnContentRendered(EventArgs e)
@@ -385,14 +386,30 @@ namespace IncidentMonitor
 
         }
 
-
-        #endregion
-
         private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Incidents.Clear();
             Timer.Stop();
             InitializePageData();
         }
+
+        private void ChangePasswordMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // This should never occur, but better be safe than sorry
+            if (LoggedInUser == null)
+            {
+                throw new NotImplementedException();
+            }
+
+            var dialog = new ChangePasswordDialog(DataLayerHelper.NotificationUsersHelper, LoggedInUser)
+            {
+                Owner = this,
+            };
+            dialog.ShowDialog();
+
+        }
+        #endregion
+
+
     }
 }

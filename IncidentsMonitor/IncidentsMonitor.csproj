@@ -18,6 +18,7 @@
     <None Remove="Resources\Images\hoist_gear.png" />
     <None Remove="Resources\Images\key-fill.png" />
     <None Remove="Resources\Images\person-exclamation.png" />
+    <None Remove="Resources\Images\person-fill-lock.png" />
     <None Remove="Resources\Images\plus-circle-fill.png" />
     <None Remove="Resources\Images\sliders.png" />
     <None Remove="Resources\Images\trash3-fill.png" />
@@ -45,6 +46,7 @@
     <Resource Include="Resources\Images\hoist_gear.png" />
     <Resource Include="Resources\Images\key-fill.png" />
     <Resource Include="Resources\Images\person-exclamation.png" />
+    <Resource Include="Resources\Images\person-fill-lock.png" />
     <Resource Include="Resources\Images\plus-circle-fill.png" />
     <Resource Include="Resources\Images\sliders.png" />
     <Resource Include="Resources\Images\trash3-fill.png" />

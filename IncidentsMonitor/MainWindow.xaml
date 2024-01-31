@@ -17,6 +17,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header="Logout" Click="LogoutMenuItem_Click"/>
+                <MenuItem Header="Change Password" Click="ChangePasswordMenuItem_Click"/>
                 <Separator/>
                 <MenuItem Header="Exit" Click="ExitMenuItem_Click"/>
             </MenuItem>
