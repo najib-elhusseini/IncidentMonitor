@@ -265,9 +265,8 @@ namespace IncidentMonitor
         /// <summary>
         /// This method notifies SVD users of unresponded Remedy Force Tickets
         /// </summary>
-        private async void NotifyUnresponded()
+        private void NotifyUnresponded()
         {
-
             var unseenNotifications = Incidents
                 .Where(i =>
                 i.RespondedDateTime == null &&
@@ -280,7 +279,7 @@ namespace IncidentMonitor
             {
                 if (DefaultCompany.Settings.EnableEmailNotifications == true)
                 {
-                    _ = NotifyUnresponded(unseenNotifications);
+                    _ = EmailUnrespondedIncidents(unseenNotifications);
                 }
                 if (DefaultCompany.Settings.EnableAlarmNotifications == true)
                 {
@@ -324,7 +323,7 @@ namespace IncidentMonitor
 
         }
 
-        private async Task NotifyUnresponded(IEnumerable<Incident> incidents)
+        private async Task EmailUnrespondedIncidents(IEnumerable<Incident> incidents)
         {
             IsLoading = true;
 
@@ -354,7 +353,7 @@ namespace IncidentMonitor
             NotifyAll();
         }
 
-        private string GetAppDirectory()
+        private static string GetAppDirectory()
         {
             var location = Assembly.GetExecutingAssembly().Location;
 
