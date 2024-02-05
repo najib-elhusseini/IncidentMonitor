@@ -34,7 +34,7 @@ namespace IncidentMonitor.DataLayer.Helpers
                 "bmcservicedesk__fkstatus__r.Name",
                 "bmcservicedesk__fkurgency__r.Name",
                 "bmcservicedesk__fkimpact__r.Name",
-                "title__c",
+                "title__c",                
                 "BMCServiceDesk__shortDescription__c",
                 "BMCServiceDesk__incidentDescription__c",
                 "BMCServiceDesk__incidentResolution__c",
@@ -64,29 +64,14 @@ namespace IncidentMonitor.DataLayer.Helpers
             var dateLiteral = DateToRemedyForceDateLiteral(date);
             var props = BuildSelectProps();
 
-
-            //var query = $"select {props} from BMCServiceDesk__Incident__c where CreatedDate < {dateLiteral} ORDER BY CreatedDate DESC  LIMIT {maxRecordsBefore}";
-            //var url = base.ConstructQuery(query);
-            //var client = GetHttpClient();
-
             try
             {
-                //var response = await client.GetAsync(url);
-                //var responseText = await response.Content.ReadAsStringAsync();
-                //response.EnsureSuccessStatusCode();
-                //var result = JsonSerializer.Deserialize<RemedyForceQuerySet<Incident>>(responseText);
+               
                 var seenRecords = await GetSeenRecords(props, dateLiteral, maxRecordsBefore);
                 var unseenRecords = await GetUnseenRecords(props, dateLiteral);
 
-                var records = unseenRecords.Concat(seenRecords);
-                //foreach (var record in records)
-                //{
-                //    record.IsSeen = record?.IncidentCreationDate <= date; 
-                //}
+                var records = unseenRecords.Concat(seenRecords);              
                 return records;
-
-
-
             }
             catch (Exception)
             {

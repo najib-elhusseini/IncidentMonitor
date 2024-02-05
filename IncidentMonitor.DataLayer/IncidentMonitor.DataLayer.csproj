@@ -7,9 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis" Version="1.66.0" />
-    <PackageReference Include="Google.Apis.Auth" Version="1.66.0" />
-    <PackageReference Include="Google.Apis.Core" Version="1.66.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
   </ItemGroup>
 

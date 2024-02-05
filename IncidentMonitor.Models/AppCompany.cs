@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace IncidentMonitor.Models
@@ -15,7 +16,6 @@ namespace IncidentMonitor.Models
 
         public string? CompanyName { get; set; }
 
-
         public int ShiftStartHours { get; set; }
 
         public int ShiftStartMinutes { get; set; }
@@ -23,6 +23,35 @@ namespace IncidentMonitor.Models
         public int ShiftEndHours { get; set; }
 
         public int ShiftEndMinutes { get; set; }
+
+        public string CompanySettingsData { get; set; } = "";
+
+
+        [Ignore]
+        public CompanySettings Settings
+        {
+            get
+            {
+                var defaultSettings = new CompanySettings()
+                {
+                    EnableAlarmNotifications = true,
+                    EnableEmailNotifications = true,
+                    AlarmInterval = 3000,
+                    RefreshInterval = 4,
+                };
+                if (string.IsNullOrWhiteSpace(CompanySettingsData))
+                {
+                    return defaultSettings;
+                }
+                var settings = JsonSerializer.Deserialize<CompanySettings>(CompanySettingsData) ?? defaultSettings;
+                return settings;
+            }
+            set
+            {
+                CompanySettingsData = JsonSerializer.Serialize(value);
+            }
+        }
+
 
 
         [Ignore]
@@ -51,9 +80,37 @@ namespace IncidentMonitor.Models
             return IsWithinShift(time);
         }
 
-        
-
         public bool IsDefaultCompany { get; set; } = false;
+
+    }
+
+    public class CompanySettings
+    {
+        public bool? EnableEmailNotifications { get; set; } = true;
+
+        public bool? EnableAlarmNotifications { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the interval of sound alarm in milliseconds
+        /// </summary>
+        public int? AlarmInterval { get; set; }
+
+        public int? AlarmIntervalSeconds
+        {
+            get
+            {
+                return AlarmInterval / 1000;
+            }
+            set
+            {
+                AlarmInterval = value * 1000;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the incidents refresh rate in seconds
+        /// </summary>
+        public int? RefreshInterval { get; set; }
 
 
 

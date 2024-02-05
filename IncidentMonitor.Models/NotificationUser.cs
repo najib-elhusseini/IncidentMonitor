@@ -58,8 +58,6 @@ namespace IncidentMonitor.Models
         [Ignore]
         public bool CanLogin => !string.IsNullOrEmpty(Email) && !string.IsNullOrEmpty(AppPassword) && IsActive == true;
 
-
-
         //SQLite.IgnoreAttribute
         [Ignore]
         public bool IsSelected

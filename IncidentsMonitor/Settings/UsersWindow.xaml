@@ -11,7 +11,7 @@
         Title="Users to notify" Height="450" Width="800">
     <Window.Resources>
         <converters:SelectedObjectToBooleanConverter x:Key="SelectedItemConverter"/>
-
+        <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -208,12 +208,17 @@
                 </TextBox>
                 <TextBlock Grid.Column="1" Grid.Row="3" Text="App Password"/>
                 <TextBox x:Name="PasswordTextBox" Grid.Column="1" 
-                     Grid.Row="4"
-                     Margin="2"                     
-                     IsEnabled="{Binding ElementName=UsersListBox,Path=SelectedItem,Converter={StaticResource SelectedItemConverter}}"
-                     Text="{Binding ElementName=UsersListBox,Path=SelectedItem.AppPassword}"
-                     
-                     />
+                        Grid.Row="4"
+                        Margin="2"     
+                        Visibility="{Binding ElementName=CheckBoxShowPassword,Path=IsChecked,Converter={StaticResource BoolToVisibilityConverter}}"
+                        IsEnabled="{Binding ElementName=UsersListBox,Path=SelectedItem,Converter={StaticResource SelectedItemConverter}}"
+                        Text="{Binding ElementName=UsersListBox,Path=SelectedItem.AppPassword}"
+                         />
+                <PasswordBox Grid.Row="4" Grid.Column="1"
+                           Password="*************" IsEnabled="False" 
+                             Margin="2"
+                             Visibility="{Binding ElementName=CheckBoxShowPassword,Path=IsChecked,Converter={StaticResource BoolToVisibilityConverter},ConverterParameter=false}"
+                             VerticalAlignment="Center"/>
 
                 <CheckBox Grid.Column="0" Grid.Row="5" Content="User is active" 
                       VerticalAlignment="Center" Margin="4,0"

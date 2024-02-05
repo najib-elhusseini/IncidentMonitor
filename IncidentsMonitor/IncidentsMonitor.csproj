@@ -12,6 +12,7 @@
   <ItemGroup>
     <None Remove="Resources\Images\arrow-clockwise-green.png" />
     <None Remove="Resources\Images\arrow-clockwise.png" />
+    <None Remove="Resources\Images\bell-fill-light.png" />
     <None Remove="Resources\Images\buildings-fill.png" />
     <None Remove="Resources\Images\envelope-check-fill.png" />
     <None Remove="Resources\Images\envelope_at_fill.png" />
@@ -23,10 +24,14 @@
     <None Remove="Resources\Images\plus-circle-fill.png" />
     <None Remove="Resources\Images\sliders.png" />
     <None Remove="Resources\Images\trash3-fill.png" />
+    <None Remove="Resources\Sounds\classic-alarm.wav" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="favicon.ico" />
+    <Content Include="Resources\Sounds\classic-alarm.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -37,6 +42,7 @@
   <ItemGroup>
     <Resource Include="Resources\Images\arrow-clockwise-green.png" />
     <Resource Include="Resources\Images\arrow-clockwise.png" />
+    <Resource Include="Resources\Images\bell-fill-light.png" />
     <Resource Include="Resources\Images\buildings-fill.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

@@ -68,7 +68,7 @@ namespace IncidentMonitor
         }
 
         async void Login()
-        {           
+        {
             if (string.IsNullOrEmpty(PasswordTextBox.Password) || string.IsNullOrEmpty(UsernameTextBox.Text))
             {
                 ResultsTextBlock.Text = "Please enter a user name and password";
@@ -87,6 +87,14 @@ namespace IncidentMonitor
 
 
             ResultsTextBlock.Text = "Invalid user name or password";
+        }
+
+        private void UsernameTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                PasswordTextBox.Focus();
+            }
         }
     }
 }

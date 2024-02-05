@@ -37,7 +37,13 @@ namespace IncidentMonitor
             DialogResult = false;
         }
 
-        private async void ConfirmButton_Click(object sender, RoutedEventArgs e)
+        private void ConfirmButton_Click(object sender, RoutedEventArgs e)
+        {
+            TryChangePassword();
+
+        }
+
+        async void TryChangePassword()
         {
             var user = await Helper.Find(LoggedInUser.Id) ?? throw new NotImplementedException();
 
@@ -56,7 +62,32 @@ namespace IncidentMonitor
             user.AppPassword = Convert.ToBase64String(encrypted);
             await Helper.UpdateAsync(user);
             DialogResult = true;
+        }
 
+        private void OldPasswordBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                NewPasswordBox.Focus();
+            }
+
+        }
+
+
+        private void NewPasswordBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ConfirmPasswordBox.Focus();
+            }
+        }
+
+        private void ConfirmPasswordBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                TryChangePassword();
+            }
         }
     }
 }

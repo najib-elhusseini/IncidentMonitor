@@ -1,0 +1,94 @@
+﻿<Window x:Class="IncidentMonitor.Settings.NotificationSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:IncidentMonitor.Settings"
+        mc:Ignorable="d"
+        Title="Notification Settings" 
+        Height="260"
+        Width="450"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="ToolWindow"
+        ShowInTaskbar="False"
+        x:Name="NotificationSettingsDialog"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+        <StackPanel 
+            Grid.Row="0"                    
+            Orientation="Horizontal"
+            Background="{StaticResource Blue500Brush}" 
+            Grid.ColumnSpan="4">
+            <Image 
+                Source="pack://application:,,,/Resources/Images/bell-fill-light.png" 
+                Width="32" Height="32" Stretch="UniformToFill" VerticalAlignment="Center"
+                Margin="15,0,0,0"/>
+            <TextBlock Margin="15,0" VerticalAlignment="Center" Text="Notification Settings" Foreground="{StaticResource Blue50Brush}" FontSize="25"/>
+        </StackPanel>
+        <CheckBox Grid.Row="1" 
+                  Margin="4,0"
+                  VerticalAlignment="Center"
+                  Content="Enable Email Notifications"                   
+                  IsChecked="{Binding ElementName=NotificationSettingsDialog,Path=CompanySettings.EnableEmailNotifications}"/>
+        <CheckBox Grid.Row="2" 
+                  Margin="4,0"
+                  VerticalAlignment="Center"
+                  Content="Enable Alarm Notifications"
+                  IsChecked="{Binding ElementName=NotificationSettingsDialog,Path=CompanySettings.EnableAlarmNotifications}"
+                  />
+
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="30"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0">
+                <TextBlock Text="Alarm Interval ("                        
+                    Margin="0"/>
+                <TextBlock Text="{Binding ElementName=TimeIntervalSlider,Path=Value}" Margin="0" />
+                <TextBlock Text=" seconds)" Margin="0"/>
+            </StackPanel>
+            <TextBlock Text="1s" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Slider x:Name="TimeIntervalSlider" Grid.Column="2" VerticalAlignment="Center" Margin="3,2"
+                 Minimum="1" 
+                 Maximum="10"
+                 Value="{Binding ElementName=NotificationSettingsDialog,Path=CompanySettings.AlarmIntervalSeconds}"
+                 TickPlacement="BottomRight"
+                 AutoToolTipPlacement="TopLeft" Interval="1"/>
+            <TextBlock Text="10s" Grid.Column="3" VerticalAlignment="Center"/>
+        </Grid>
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="50*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"  Margin="5" x:Name="BtnSave" Click="BtnSave_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Save" Foreground="{StaticResource Blue50Brush}"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+            <Button Grid.Column="1" Style="{StaticResource SecondaryButtonStyle}"
+                     Margin="5" Click="CancelButton_Click">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Cancel" Foreground="{StaticResource Blue50Brush}"/>
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+        </Grid>
+
+
+
+    </Grid>
+</Window>

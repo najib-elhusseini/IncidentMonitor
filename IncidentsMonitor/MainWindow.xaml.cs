@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Media;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -98,7 +99,7 @@ namespace IncidentMonitor
 
         // Using a DependencyProperty as the backing store for TimerInterval.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty TimerIntervalProperty =
-            DependencyProperty.Register("TimerInterval", typeof(int), typeof(MainWindow), new PropertyMetadata(5));
+            DependencyProperty.Register("TimerInterval", typeof(int), typeof(MainWindow), new PropertyMetadata(3));
 
 
 
@@ -277,7 +278,14 @@ namespace IncidentMonitor
 
             if (unseenNotifications.Any())
             {
-                await NotifyUnresponded(unseenNotifications);
+                if (DefaultCompany.Settings.EnableEmailNotifications == true)
+                {
+                    _ = NotifyUnresponded(unseenNotifications);
+                }
+                if (DefaultCompany.Settings.EnableAlarmNotifications == true)
+                {
+                    PlayAlarm();
+                }
             }
 
         }
@@ -293,16 +301,22 @@ namespace IncidentMonitor
             }
 
             IsLoading = true;
+            if (DefaultCompany.Settings.EnableAlarmNotifications == true)
+            {
+                PlayAlarm();
+            }
+            if (DefaultCompany.Settings.EnableEmailNotifications == true)
+            {
+                var smtpHelper = DataLayerHelper.SmtpSettingsHelper;
 
-            var smtpHelper = DataLayerHelper.SmtpSettingsHelper;
+                var emailConfig = await smtpHelper.GetEmailConfigurationAsync() ?? throw new NotImplementedException();
+                var emailHelper = new EmailHelper(emailConfig);
 
-            var emailConfig = await smtpHelper.GetEmailConfigurationAsync() ?? throw new NotImplementedException();
-            var emailHelper = new EmailHelper(emailConfig);
+                var usersToNotifyHelper = DataLayerHelper.NotificationUsersHelper;
+                var usersToNotify = await usersToNotifyHelper.GetUsersToNotifyAsync();
 
-            var usersToNotifyHelper = DataLayerHelper.NotificationUsersHelper;
-            var usersToNotify = await usersToNotifyHelper.GetUsersToNotifyAsync();
-
-            await emailHelper.SendIncidentsNotificationEmailAsync(notifications, usersToNotify);
+                await emailHelper.SendIncidentsNotificationEmailAsync(notifications, usersToNotify);
+            }
 
             IsLoading = false;
 
@@ -326,6 +340,8 @@ namespace IncidentMonitor
             IsLoading = false;
 
         }
+
+
         #endregion
 
         private void BtnRefresh_Click(object sender, RoutedEventArgs e)
@@ -408,8 +424,42 @@ namespace IncidentMonitor
             dialog.ShowDialog();
 
         }
+
+        private void NotificationSettingsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new NotificationSettingsWindow(DefaultCompany, DataLayerHelper.CompaniesHelper)
+            {
+                Owner = this,
+            };
+            dialog.ShowDialog();
+
+
+
+        }
+
+
+
+
+
         #endregion
 
+        private async void PlayAlarm()
+        {
+            var intervalMilliSeconds = DefaultCompany.Settings.AlarmInterval ?? 1000;
+
+            var appDir = GetAppDirectory();
+            var alarmFilePath = Path.Combine(appDir, "Resources", "Sounds", "classic-alarm.wav");
+            SoundPlayer soundPlayer = new SoundPlayer(alarmFilePath);
+            soundPlayer.Load();
+            for (int i = 0; i < 3; i++)
+            {
+                await Task.Factory.StartNew(() =>
+                {
+                    soundPlayer.PlaySync();
+                    System.Threading.Thread.Sleep(intervalMilliSeconds);
+                });
+            }
+        }
 
     }
 }
