@@ -1,4 +1,4 @@
-# Incident Monitor\
+# Incident Monitor
 ---
 A Windows Based utility to monitor unresponded Incidents within the shift timespan of Service Desk agents.\
 Incidents : Remedy Force objects that are still unresolved and unresponded by an SVD agent.\
