@@ -13,13 +13,13 @@ namespace IncidentMonitor.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            _ = bool.TryParse(value.ToString(), out bool showPassword);
-            if (parameter != null && bool.TryParse(parameter.ToString(), out bool param))
+            _ = bool.TryParse(value.ToString(), out bool visible);
+            if (parameter != null && bool.TryParse(parameter.ToString(), out bool inverse))
             {
-                showPassword = showPassword == param;
+                visible = visible == inverse;
             }
 
-            return showPassword ? Visibility.Visible : Visibility.Collapsed;
+            return visible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

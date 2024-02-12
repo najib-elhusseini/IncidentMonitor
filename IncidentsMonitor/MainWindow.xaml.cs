@@ -231,7 +231,7 @@ namespace IncidentMonitor
             Incidents.Clear();
 
             try
-            {
+            {             
                 var incidents = await DataLayerHelper
                                .RemdyForceIncidentsHelper
                                .GetIncidents(Today.ToUniversalTime());
@@ -247,7 +247,7 @@ namespace IncidentMonitor
             catch (Exception ex)
             {
                 HasLoadingErrors = true;
-                ErrorMessage = $"Errors occured while loading the incidents : \n{ex.ToString()}";
+                ErrorMessage = $"{ex.ToString()}";
                 if (Timer != null)
                 {
                     Timer.Stop();

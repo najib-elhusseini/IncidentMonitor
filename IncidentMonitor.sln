@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncidentMonitor.Models", "I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IncidentsMonitor", "IncidentsMonitor\IncidentsMonitor.csproj", "{55C61CB5-426A-4B8A-8363-7E0A143B5902}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IncidentMonitor", "IncidentMonitor\IncidentMonitor.csproj", "{8615B7BD-C213-4710-98BC-D194A1119128}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{55C61CB5-426A-4B8A-8363-7E0A143B5902}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55C61CB5-426A-4B8A-8363-7E0A143B5902}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55C61CB5-426A-4B8A-8363-7E0A143B5902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8615B7BD-C213-4710-98BC-D194A1119128}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8615B7BD-C213-4710-98BC-D194A1119128}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8615B7BD-C213-4710-98BC-D194A1119128}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8615B7BD-C213-4710-98BC-D194A1119128}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

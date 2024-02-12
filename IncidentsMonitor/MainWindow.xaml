@@ -12,6 +12,8 @@
         Title="MainWindow" Height="600" Width="1024">
     <Window.Resources>
         <converters:BooleanNotConverter x:Key="BooleanInverseConverter"/>
+        <converters:BooleanToVisibilityConverter x:Key="BoolVisibilityConverter"/>
+        
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -92,9 +94,35 @@
                     </StackPanel>
                 </Grid>
             </Border>
-            <DataGrid x:Name="IncidentsGrid" Margin="2,10,2,0" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" Grid.ColumnSpan="2">
+            <GroupBox 
+                Visibility="{Binding ElementName=IncidentsMonitorMainWindow,Path=HasLoadingErrors,Converter={StaticResource BoolVisibilityConverter}}"
+                Grid.Row="1" Margin="4" Padding="4" VerticalAlignment="Top">
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="pack://application:,,,/Resources/Images/exclamation-diamond-fill.png"
+                        Width="20" Height="20" VerticalAlignment="Center"
+                        />     
+                        <TextBlock Text="Some errors have occured" FontWeight="Bold"/>
+                    </StackPanel>
+                </GroupBox.Header>
+                    <TextBlock Grid.Row="1"
+                       FontSize="14"
+                       Text="{Binding ElementName=IncidentsMonitorMainWindow,Path=ErrorMessage}"                       
+                       Foreground="Red"
+                       />
+            </GroupBox>
+        
+
+
+            <DataGrid 
+                x:Name="IncidentsGrid" Margin="2,10,2,0" Grid.Row="1" 
+                Visibility="{Binding ElementName=IncidentsMonitorMainWindow,Path=HasLoadingErrors,Converter={StaticResource BoolVisibilityConverter}, ConverterParameter=false}"
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True" 
+                      Grid.ColumnSpan="2">
                 <DataGrid.Columns>
-                    <DataGridTextColumn FontWeight="Bold" Width="100" IsReadOnly="True" Header="#" Binding="{Binding IncidentName}"/>
+                    <DataGridTextColumn FontWeight="Bold" Width="100" IsReadOnly="True" Header="#" 
+                                        Binding="{Binding IncidentName}"/>
                     <DataGridTextColumn Width="*" IsReadOnly="True" Header="Title" Binding="{Binding Title}">
                         <DataGridTextColumn.ElementStyle>
                             <Style>

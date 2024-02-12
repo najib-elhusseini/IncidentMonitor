@@ -16,6 +16,8 @@
     <None Remove="Resources\Images\buildings-fill.png" />
     <None Remove="Resources\Images\envelope-check-fill.png" />
     <None Remove="Resources\Images\envelope_at_fill.png" />
+    <None Remove="Resources\Images\exclamation-diamond-fill.png" />
+    <None Remove="Resources\Images\favicon.ico" />
     <None Remove="Resources\Images\floppy-fill.png" />
     <None Remove="Resources\Images\hoist_gear.png" />
     <None Remove="Resources\Images\key-fill.png" />
@@ -50,6 +52,10 @@
     <Resource Include="Resources\Images\envelope_at_fill.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\Images\exclamation-diamond-fill.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\favicon.ico" />
     <Resource Include="Resources\Images\floppy-fill.png" />
     <Resource Include="Resources\Images\hoist_gear.png" />
     <Resource Include="Resources\Images\key-fill.png" />
