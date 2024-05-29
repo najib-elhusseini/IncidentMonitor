@@ -8,6 +8,9 @@ using System.Net.Mail;
 using System.Net;
 using System.ComponentModel.DataAnnotations;
 using System.Collections;
+using IncidentMonitor.DataLayer.Models;
+using IncidentMonitor.Models.RemedyForce;
+using IncidentMonitor.Models.Assyst;
 
 namespace IncidentMonitor.DataLayer.Helpers
 {
@@ -24,7 +27,7 @@ namespace IncidentMonitor.DataLayer.Helpers
         }
 
         public async Task SendIncidentsNotificationEmailAsync
-            (IEnumerable<Models.RemedyForce.Incident> incidents, IEnumerable<NotificationUser> users)
+            (IEnumerable<IncidentMonitor.Models.RemedyForce.Incident> incidents, IEnumerable<NotificationUser> users)
         {
             var userEmails = users.Select(x => x.Email ?? "").ToArray();
             if (userEmails == null || !userEmails.Any())
@@ -57,8 +60,9 @@ namespace IncidentMonitor.DataLayer.Helpers
         }
 
 
+        [Obsolete]
         public async Task SendUnrespondedNotificationEmailsAsync
-            (IEnumerable<Models.RemedyForce.Incident> incidents, IEnumerable<NotificationUser> users)
+            (IEnumerable<EventDto> incidents, IEnumerable<NotificationUser> users)
         {
             var userEmails = users.Select(x => x.Email ?? "").ToArray();
             if (userEmails == null || !userEmails.Any())
@@ -75,25 +79,54 @@ namespace IncidentMonitor.DataLayer.Helpers
             {
                 sb.Append("<li>");
                 sb.Append('#');
-                sb.Append(incident.IncidentName);
+                sb.Append(incident.EventRef);
                 sb.Append("&nbsp;&nbsp;");
-                sb.Append(incident.ClientAccountName ?? "");
+                sb.Append(incident.Department?.Section?.Name ?? "");
                 sb.Append(" - ");
-                sb.Append(incident.Client?.Username ?? "");
+                sb.Append(incident.AffectedUserName ?? "");
                 sb.Append("&nbsp;&nbsp;");
-                sb.Append(incident.Title);
+                sb.Append(incident.ShortDescription);
                 sb.Append("</li>");
             }
             sb.Append("</ul></body></html>");
             var body = sb.ToString();
-            
+
             await SendEmailAsync(subject, body, null, userEmails);
 
         }
 
 
+        public async Task SendUnrespondedNotificationEmailsAsync(IEnumerable<EventDto> incidents, ApplicationUser user)
+        {
+            var userEmail = user.Email;
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return;
+            }
+            var subject = $"Unresponded incidents detected";
 
+            StringBuilder sb = new();
+            sb.Append("<html><body>");
+            sb.Append($"<b>Unresponded incidents detected ({incidents.Count()})</b>");
+            sb.Append("<br/><ul>");
+            foreach (var incident in incidents)
+            {
+                sb.Append("<li>");
+                sb.Append('#');
+                sb.Append(incident.EventRef);
+                sb.Append("&nbsp;&nbsp;");
+                sb.Append(incident.Department?.Section?.Name ?? "");
+                sb.Append(" - ");
+                sb.Append(incident.AffectedUserName ?? "");
+                sb.Append("&nbsp;&nbsp;");
+                sb.Append(incident.ShortDescription);
+                sb.Append("</li>");
+            }
+            sb.Append("</ul></body></html>");
+            var body = sb.ToString();
 
+            await SendEmailAsync(subject, body, null, userEmail);
+        }
 
 
         public async Task SendEmailAsync(

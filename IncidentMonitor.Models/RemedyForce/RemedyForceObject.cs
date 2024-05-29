@@ -12,8 +12,10 @@ namespace IncidentMonitor.Models.RemedyForce
         [JsonPropertyName("attributes")]
         public RemedyForceAttributes? Attributes { get; set; }
 
-        public string? Id { get; set; }     
-        
+        [JsonPropertyName("Id")]
+        public string? Id { get; set; }
+
+        [JsonPropertyName("CreatedDate")]
         public string? CreatedDate { get; set; }
 
 

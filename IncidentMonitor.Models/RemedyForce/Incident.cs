@@ -15,26 +15,35 @@ namespace IncidentMonitor.Models.RemedyForce
     public class Incident : RemedyForceObject
     {
 
-        public string OwnerId { get; set; }
+        [JsonPropertyName("OwnerId")]
+        public string? OwnerId { get; set; }
 
+        [JsonPropertyName("IsDeleted")]
         public bool? IsDeleted { get; set; }
 
-        public string Name { get; set; }
+        [JsonPropertyName("Name")]
+        public string? Name { get; set; }
 
         [JsonPropertyName("Title__c")]
-        public string Title { get; set; }
+        public string? Title { get; set; }
 
+        [JsonPropertyName("CreatedById")]
+        public string? CreatedById { get; set; }
 
-
-        public string CreatedById { get; set; }
-
+        [JsonPropertyName("CreatedBy")]
         public User? CreatedBy { get; set; }
 
         [JsonPropertyName("BMCServiceDesk__FKClient__r")]
         public User? Client { get; set; }
 
+        [JsonPropertyName("BMCServiceDesk__FKOpenBy__r")]
+        public User? Staff { get; set; }
+
+
         [JsonPropertyName("BMCServiceDesk__FKAccount__r")]
         public Account? Account { get; set; }
+
+
 
 
         [JsonPropertyName("BMCServiceDesk__FKStatus__r")]
@@ -61,6 +70,10 @@ namespace IncidentMonitor.Models.RemedyForce
         [JsonPropertyName("BMCServiceDesk__queueName__c")]
         public string? QueueName { get; set; }
 
+        [JsonPropertyName("BMCServiceDesk__Queue__c")]
+        public string? Queue { get; set;}
+
+
         [JsonPropertyName("BMCServiceDesk__Client_Account__c")]
         public string? ClientAccountName { get; set; }
 
@@ -73,6 +86,11 @@ namespace IncidentMonitor.Models.RemedyForce
         [JsonPropertyName("BMCServiceDesk__respondedDateTime__c")]
         public string? RespondedDateTime { get; set; }
 
+        [JsonPropertyName("BMCServiceDesk__Launch_console__c")]
+        public string? ConsoleUrl { get; set; }
+
+        public string? InstanceUrl { get; set; }
+
         [JsonIgnore]
         public string RespondedStatus
         {
@@ -83,9 +101,9 @@ namespace IncidentMonitor.Models.RemedyForce
         }
 
 
-
-
         public bool IsSeen { get; set; } = false;
+
+        public EventAcknowledgedStatus? IncidentStatus { get; set; }
 
 
         #region Calculated properties
@@ -112,5 +130,60 @@ namespace IncidentMonitor.Models.RemedyForce
         [JsonIgnore]
         public string IncidentName => $"IN{Name}";
         #endregion
+
+
+
+        [JsonPropertyName("BMCServiceDesk__closeDateTime__c")]
+        public string? ClosedDateTime { get; set; }
+
+        [JsonPropertyName("BMCServiceDesk__dueDateTime__c")]
+        public string? BMCServiceDesk__dueDateTime__c { get; set; }
+
+        [JsonPropertyName("BMCServiceDesk__openDateTime__c")]
+        public string? OpenDateTime { get; set; }
+
+        [JsonPropertyName("BMCServiceDesk__Closed_By__c")]
+        public string? ClosedBy { get; set; }
+
+        [JsonPropertyName("BMCServiceDesk__TotalWorkTime__c")]
+        public double? TotalWorkTime { get; set; }
+
+        [JsonPropertyName("System_Category_del__c")]
+        public string? SystemCategory { get; set; }
+
+        [JsonPropertyName("IFS_Functional_Flow__c")]
+        public string? IfsFunctionalFlow { get; set; }
+
+        [JsonPropertyName("Customer_Case_ID__c")]
+        public string? CustomerCaseId { get; set; }
+
+        [JsonPropertyName("Environment__c")]
+        public string? Environment { get; set; }
+
+        [JsonPropertyName("Track__c")]
+        public string? Track { get; set; }
+
+        [JsonPropertyName("Customer_Request_Type__c")]
+        public string? CustomerRequestType { get; set; }
+
+        [JsonPropertyName("Cost_Center__c")]
+        public string? CostCenter { get; set; }
+
+        [JsonPropertyName("IFS_Case_ID__c")]
+        public string? IfsCaseId { get; set; }
+
+        [JsonPropertyName("Total_Billable_Time__c")]
+        public double? TotalBillableTime { get; set; }
+
+        [JsonPropertyName("CRIM__c")]
+        public bool? IsCrim { get; set; }
+
+        [JsonPropertyName("BMCServiceDesk__Status_ID__c")]
+        public string? StatusId { get; set; }
+
+        
+
     }
+
+    
 }

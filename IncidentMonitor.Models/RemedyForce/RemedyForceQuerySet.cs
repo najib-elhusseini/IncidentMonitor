@@ -15,6 +15,9 @@ namespace IncidentMonitor.Models.RemedyForce
         [JsonPropertyName("done")]
         public bool Done { get; set; }
 
+        [JsonPropertyName("nextRecordsUrl")]
+        public string? NextRecordsUrl { get; set; }
+
         [JsonPropertyName("records")]
         public List<T> Records { get; set; }
 

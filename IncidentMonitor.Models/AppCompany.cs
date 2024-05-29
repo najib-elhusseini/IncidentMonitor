@@ -1,6 +1,8 @@
 ﻿using SQLite;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -12,6 +14,7 @@ namespace IncidentMonitor.Models
     {
         [AutoIncrement]
         [PrimaryKey]
+        [Key]
         public int Id { get; set; }
 
         public string? CompanyName { get; set; }
@@ -28,6 +31,7 @@ namespace IncidentMonitor.Models
 
 
         [Ignore]
+        [NotMapped]
         public CompanySettings Settings
         {
             get
@@ -52,9 +56,8 @@ namespace IncidentMonitor.Models
             }
         }
 
-
-
         [Ignore]
+        [NotMapped]
         public TimeOnly ShiftStartTime
         {
             get
@@ -64,6 +67,7 @@ namespace IncidentMonitor.Models
         }
 
         [Ignore]
+        [NotMapped]
         public TimeOnly ShiftEndTime
         {
             get

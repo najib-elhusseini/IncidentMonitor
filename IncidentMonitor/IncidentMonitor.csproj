@@ -15,7 +15,19 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.15" />
+		<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.15" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.15" />
 		<PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="7.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.15" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.15" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.15">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,7 +45,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Models\" />
-	  <Folder Include="wwwroot\data\" />
 	</ItemGroup>
 
 	<ItemGroup>

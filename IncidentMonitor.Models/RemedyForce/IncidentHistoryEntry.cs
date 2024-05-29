@@ -21,5 +21,9 @@ namespace IncidentMonitor.Models.RemedyForce
 
         [JsonPropertyName("BMCServiceDesk__RichTextNote__c")]
         public string? RichTextNote { get; set; }
+
+
+        [JsonPropertyName("CreatedBy")]
+        public User? CreatedBy { get; set; }
     }
 }

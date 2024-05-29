@@ -14,6 +14,7 @@ namespace IncidentMonitor.Models
         [PrimaryKey]
         [AutoIncrement]
         [JsonPropertyName("id")]
+        [Key]
         public int Id { get; set; }
 
         [JsonPropertyName("userName")]

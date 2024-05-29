@@ -13,7 +13,6 @@ namespace IncidentMonitor.DataLayer.Helpers
         protected RemedyForceSetting Settings { get; set; }
         protected int Version { get; set; } = 59;
 
-
         public RemedyForceApiHelper(RemedyForceSetting setting)
         {
             Settings = setting;
