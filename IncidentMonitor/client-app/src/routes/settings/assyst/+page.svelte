@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
-	import FormButton from '$lib/components/FormButton.svelte';
+	import Form from '$lib/components/Form.svelte';
 	import LabeledInput from '$lib/components/LabeledInput.svelte';
 	import LabeledPasswordBox from '$lib/components/LabeledPasswordBox.svelte';
-	import type { RemedyForceSettings } from '$lib/models/remedy_force.js';
+
 	import {
 		fireErrorToast,
 		fireSaveErrorToast,
@@ -15,16 +15,16 @@
 	let isLoading = false;
 	let settings = data.settings;
 
-	function checkFormValidity(): boolean {
-		const elems: NodeListOf<HTMLInputElement | HTMLSelectElement> =
-			document.querySelectorAll('[data-required=true]');
-		for (const elem of elems) {
-			if (!elem.checkValidity()) {
-				return false;
-			}
-		}
-		return true;
-	}
+	// function checkFormValidity(): boolean {
+	// 	const elems: NodeListOf<HTMLInputElement | HTMLSelectElement> =
+	// 		document.querySelectorAll('[data-required=true]');
+	// 	for (const elem of elems) {
+	// 		if (!elem.checkValidity()) {
+	// 			return false;
+	// 		}
+	// 	}
+	// 	return true;
+	// }
 
 	function constructFormData() {
 		const data = new FormData();
@@ -35,10 +35,7 @@
 		return data;
 	}
 
-	async function saveChanges(event: Event) {
-		if (!checkFormValidity()) {
-			return;
-		}
+	async function saveChanges(event: CustomEvent) {
 		const body = constructFormData();
 		const url = '/api/assyst/savesettings';
 		isLoading = true;
@@ -60,7 +57,8 @@
 
 	async function testSettings() {
 		isLoading = true;
-		const url = `/api/assyst/getlastevent`;
+		const searchQuery = '$top=1%26$orderby=id:desc';
+		const url = `/api/assyst/searchevents?searchQuery=${searchQuery}`;
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: {
@@ -77,14 +75,12 @@
 </script>
 
 <div class="flex">
-	<div
-		class="w-full md:w-1/2 mx-auto mt-2 md:mt-4 lg:mt-8 border border-slate-300 rounded-md bg-white shadow-lg"
-	>
-		<div class="p-2">
-			<h3 class="py-4 text-xl border-b border-b-slate-300 space-x-2">
+	<div class="w-full md:w-2/3 xl:w-1/2 mx-auto mt-0 lg:mt-8 xl:mt-10">
+		<Form isCard={true} on:submit={saveChanges}>
+			<span slot="title" class="space-x-2">
 				<i class="bi bi-sliders" />
 				<span>IFS Assyst Settings</span>
-			</h3>
+			</span>
 			<div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
 				<div class="col-span-2">
 					<LabeledInput
@@ -108,12 +104,12 @@
 					required={true}
 				/>
 
-				<FormButton role="primary" disabled={isLoading} on:click={saveChanges}>
+				<Button buttonStyle="primary" type="submit" disabled={isLoading}>
 					<span> Save Changes </span>
-				</FormButton>
-				<FormButton role="secondary" disabled={isLoading} on:click={testSettings}>
+				</Button>
+				<Button buttonStyle="secondary" type="button" disabled={isLoading} on:click={testSettings}>
 					<span> Test Settings </span>
-				</FormButton>
+				</Button>
 			</div>
 			<div class="text-center my-2">
 				<Button type="button" buttonStyle="link" href="/settings/assyst/xml-reader">
@@ -121,6 +117,6 @@
 					XML Documentation
 				</Button>
 			</div>
-		</div>
+		</Form>
 	</div>
 </div>

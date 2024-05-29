@@ -8,6 +8,7 @@
 	let form: HTMLFormElement;
 	let dispatch = createEventDispatcher();
 
+	export let id: string | undefined = undefined;
 	export let isLoading = false;
 	export let allowSubmit: boolean = true;
 	export let showBackButton: boolean = false;
@@ -26,7 +27,6 @@
 
 			i.dataset.validated = 'true';
 			i.dispatchEvent(new Event('validate--custom'));
-			
 		}
 		if (!form.checkValidity()) {
 			return;
@@ -58,6 +58,7 @@
 		{/if}
 
 		<form
+			{id}
 			on:click
 			on:mousedown
 			on:mouseup
