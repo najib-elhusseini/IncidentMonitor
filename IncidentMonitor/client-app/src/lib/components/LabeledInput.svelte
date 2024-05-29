@@ -11,6 +11,7 @@
 	export let min: number | undefined = undefined;
 	export let max: number | undefined = undefined;
 	export let validationText: string | undefined = 'This field is required';
+	export let autocomplete: 'on' | 'off' | string | undefined = 'off';
 
 	let element: HTMLInputElement;
 
@@ -41,6 +42,7 @@
 		{placeholder}
 		{min}
 		{max}
+		{autocomplete}
 		type="text"
 		bind:value
 		data-required={required}

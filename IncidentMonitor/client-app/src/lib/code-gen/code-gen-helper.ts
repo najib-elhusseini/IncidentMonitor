@@ -1,4 +1,4 @@
-import { capitalize } from "$lib/string-helpers";
+import { capitalize } from '$lib/helpers/string-helper'
 
 type tagNames = "xs:complexType" | string;
 
@@ -280,7 +280,7 @@ function generateTypeScriptComplexType(element: Element): string {
         export interface ${complexTypeCode} extends ${baseObject}{        
             ${sequenceCode}
         }
-        `;        
+        `;
     return complexTypeCode;
 }
 

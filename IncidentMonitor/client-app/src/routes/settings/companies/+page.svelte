@@ -1,9 +1,23 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
-	import CompanySiteEditor from '$lib/admin/CompanySiteEditor.svelte';
+
+	import Button from '$lib/components/Button.svelte';
+	import DataTable from '$lib/components/DataTable.svelte';
+	import DataTableCell from '$lib/components/DataTableCell.svelte';
+	import DataTableMenuButton from '$lib/components/DataTableMenuButton.svelte';
+	import DataTableRow from '$lib/components/DataTableRow.svelte';
+
+	import LabeledInput from '$lib/components/LabeledInput.svelte';
+	import LabeledSelect from '$lib/components/LabeledSelect.svelte';
+	import ModalDialog from '$lib/components/ModalDialog.svelte';
+	import ToggleButton from '$lib/components/ToggleButton.svelte';
 
 	import type { Company } from '$lib/models/company_site.js';
-	import { fireDeleteConfirmationDialog } from '$lib/swal_helper.js';
+	import {
+		fireDeleteConfirmationDialog,
+		fireSaveErrorToast,
+		fireSaveSuccessToast
+	} from '$lib/swal_helper.js';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -13,6 +27,15 @@
 	}
 	let contextSite: Company | undefined = undefined;
 	let isBusy = true;
+	let dialog: ModalDialog;
+	let offsets: number[] = [];
+	let isLoading = false;
+
+	function getOffsetString(offset: number) {
+		let sign = offset < 0 ? '-' : '+';
+		const offsetString = `${sign}${Math.abs(offset)}`;
+		return offsetString;
+	}
 
 	function addNewCompany() {
 		contextSite = {
@@ -26,6 +49,12 @@
 			enableEmailNotifications: true,
 			alarmInterval: 3000
 		};
+		dialog.openDialog();
+	}
+
+	function editCompany(company: Company) {
+		contextSite = company;
+		dialog.openDialog();
 	}
 
 	async function deleteCompany(id: number) {
@@ -45,13 +74,48 @@
 		}
 	}
 
-	function handleDialogClosed(event: CustomEvent) {
-		let cancel = event.detail.cancel as boolean;
+	function handleDialogCanceled(event: CustomEvent) {
+		dialog.dismissDialog();
 		contextSite = undefined;
-		if (cancel) {
+	}
+
+	async function handleSubmit(event: CustomEvent) {
+		let site = contextSite;
+		if (!site) {
 			return;
 		}
-		refreshData();
+		if (site.tzOffset === undefined) {
+			return;
+		}
+		const url = '/api/companysites/updatecompany';
+		const body = new FormData();
+		body.append('id', `${site.id}`);
+		body.append('companyName', `${site.companyName}`);
+		body.append('shiftStartHours', `${site.shiftStartHours}`);
+		body.append('shiftStartMinutes', `${site.shiftStartMinutes}`);
+		body.append('shiftEndHours', `${site.shiftEndHours}`);
+		body.append('shiftEndMinutes', `${site.shiftEndMinutes}`);
+		body.append('enableAlarmNotifications', `${site.enableAlarmNotifications}`);
+		body.append('enableEmailNotifications', `${site.enableEmailNotifications}`);
+		body.append('tzOffset', `${site.tzOffset}`);
+
+		isLoading = true;
+		const response = await fetch(url, {
+			method: 'post',
+			body: body,
+			headers: {
+				Authorization: `Bearer ${data.user.token}`
+			}
+		});
+		if (response.ok) {			
+			await invalidateAll();
+			fireSaveSuccessToast();
+			dialog.dismissDialog();
+		} else {
+			fireSaveErrorToast();
+		}
+
+		isLoading = false;
 	}
 
 	async function refreshData() {
@@ -60,82 +124,164 @@
 		isBusy = false;
 	}
 
-	onMount(() => {});
+	onMount(() => {
+		let _offsets = [];
+		for (let i = -12; i < 15; i++) {
+			_offsets.push(i);
+		}
+
+		offsets = [..._offsets];
+	});
 </script>
 
-<div>
-	<div class="bg-slate-100 p-2 md:py-3 lg:py-4 border-b border-b-slate-300 shadow">
-		<button
-			on:click={addNewCompany}
-			type="button"
-			class="text-slate-600 hover:text-indigo-500 active:text-indigo-600 px-2 py-1.5
-		 rounded-sm"
-		>
-			<i class="bi bi-plus-circle-fill" />
-			<span> New Site </span>
-		</button>
-		<button
-			on:click={refreshData}
-			type="button"
-			class="text-slate-600 hover:text-indigo-500 active:text-indigo-600 px-2 py-1.5
-		 rounded-sm"
-		>
-			<i class="bi bi-arrow-clockwise"></i>
-			<span> Refresh </span>
-		</button>
-	</div>
-	<div class="p-2">
-		<div class="border border-slate-300 rounded-md overflow-clip">
-			<table class=" w-full border-collapse">
-				<thead>
-					<tr class="bg-slate-600 text-slate-50 border-b-2 border-b-slate-900">
-						<th class="px-2 py-1.5 border-r border-r-slate-300 text-left"> Site </th>
-						<th class="px-2 py-1.5 border-r border-r-slate-300 text-left"> Shift Start </th>
-						<th class="px-2 py-1.5 border-r border-r-slate-300 text-left"> Shift End </th>
-						<th class="w-[70px]"> </th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each sites as site (site.id)}
-						<tr class="border-b border-b-slate-300 last-of-type:border-b-0">
-							<td class="border-r border-r-slate-300 px-2 py-1.5">
-								<button
-									on:click={() => (contextSite = site)}
-									type="button"
-									class="text-indigo-500 hover:text-indigo-600 hover:underline focus:outline-none"
-								>
-									{site.companyName}
-								</button>
-							</td>
-							<td class="border-r border-r-slate-300 px-2 py-1.5">
-								{site.shiftStartHours}:{site.shiftStartMinutes}
-							</td>
-							<td class="border-r border-r-slate-300 px-2 py-1.5">
-								{site.shiftEndHours}:{site.shiftEndMinutes}
-							</td>
-							<td class="px-2 py-1.5 text-center">
-								<button
-									type="button"
-									class="text-red-500 hover:text-red-600 focus:outline-none"
-									on:click={() => {
-										deleteCompany(site.id);
-									}}
-								>
-									<i class="bi bi-trash3-fill"></i>
-								</button>
-							</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
-	</div>
+<div class="p-2">
+	<DataTable on:addnew={addNewCompany} on:refresh={refreshData} allowSearch={false}>
+		<span slot="title">
+			<i class="bi bi-buildings" />
+			<span> Companies </span>
+		</span>
+
+		<tr slot="header">
+			<DataTableCell isHeader={true}>Name</DataTableCell>
+			<DataTableCell isHeader={true}>Shift start time</DataTableCell>
+			<DataTableCell isHeader={true}>Shift end time</DataTableCell>
+			<DataTableCell isHeader={true} width={100}></DataTableCell>
+		</tr>
+		{#each sites as site (site.id)}
+			<DataTableRow>
+				<DataTableCell>
+					<Button buttonStyle="link" type="button" on:click={() => editCompany(site)}>
+						{site.companyName}
+					</Button>
+				</DataTableCell>
+				<DataTableCell>
+					{site.shiftStartHours}:{site.shiftStartMinutes}
+				</DataTableCell>
+				<DataTableCell>
+					{site.shiftEndHours}:{site.shiftEndMinutes}
+				</DataTableCell>
+				<DataTableCell>
+					<DataTableMenuButton
+						on:delete={() => deleteCompany(site.id)}
+						on:edit={() => editCompany(site)}
+					/>
+				</DataTableCell>
+			</DataTableRow>
+		{/each}
+	</DataTable>
 </div>
 
-{#if contextSite !== undefined}
+<ModalDialog
+	bind:this={dialog}
+	on:cancel={handleDialogCanceled}
+	on:submit={handleSubmit}
+	busy={isLoading}
+>
+	<span slot="title">
+		{contextSite?.id !== 0 ? 'Edit Site' : 'Add Site'}
+	</span>
+	{#if contextSite}
+		<div class="py-2">
+			<LabeledInput
+				label="Site Name"
+				required={true}
+				id="companyNameInput"
+				name="companyName"
+				bind:value={contextSite.companyName}
+			/>
+
+			<LabeledSelect
+				id="timeZonesSelect"
+				validationText="Please select timezone"
+				required={true}
+				labelText="Time Zone Offset"
+				bind:value={contextSite.tzOffset}
+			>
+				<option value="">---Timezone Offset---</option>
+				{#each offsets as offset (offset)}
+					<option value={offset} selected={contextSite.tzOffset === offset}>
+						{getOffsetString(offset)}
+					</option>
+				{/each}
+			</LabeledSelect>
+			<div class="grid grid-cols-2 gap-2 my-1">
+				<div>
+					<span class=" text-slate-500 block mb-1"> Shift Start Time </span>
+					<div class="grid grid-cols-2 gap-2">
+						<LabeledInput
+							id="shiftStartTimeInput"
+							placeholder="HH"
+							bind:value={contextSite.shiftStartHours}
+							isNumeric={true}
+							min={0}
+							max={23}
+							validationText="Invalid value"
+						/>
+						<LabeledInput
+							id="shiftEndTimeInput"
+							placeholder="MM"
+							bind:value={contextSite.shiftStartMinutes}
+							isNumeric={true}
+							min={0}
+							max={59}
+							validationText="Invalid value"
+						/>
+					</div>
+				</div>
+
+				<div>
+					<span class=" text-slate-500 block mb-1"> Shift End Time </span>
+					<div class="grid grid-cols-2 gap-2">
+						<LabeledInput
+							id="shiftStartTimeInput"
+							placeholder="HH"
+							bind:value={contextSite.shiftEndHours}
+							isNumeric={true}
+							min={0}
+							max={23}
+							validationText="Invalid value"
+						/>
+						<LabeledInput
+							id="shiftEndTimeInput"
+							placeholder="MM"
+							bind:value={contextSite.shiftEndMinutes}
+							isNumeric={true}
+							min={0}
+							max={59}
+							validationText="Invalid value"
+						/>
+					</div>
+				</div>
+			</div>
+			<div class="space-y-2">
+				<ToggleButton
+					label="Enable email notifications"
+					bind:checked={contextSite.enableEmailNotifications}
+				/>
+				<ToggleButton
+					label="Enable alarm notifications"
+					bind:checked={contextSite.enableAlarmNotifications}
+				/>
+			</div>
+			<!-- <div class="grid grid-cols-2 gap-2 my-2">
+			<FormButton role="primary" on:click={saveChanges} disabled={isLoading}>
+				<i class="bi bi-floppy-fill" />
+				Save
+			</FormButton>
+			<FormButton
+				role="secondary"
+				on:click={() => cancelDialogInternal(false)}
+				disabled={isLoading}>Cancel</FormButton
+			>
+		</div> -->
+		</div>
+	{/if}
+</ModalDialog>
+
+<!-- {#if contextSite !== undefined}
 	<CompanySiteEditor
 		site={contextSite}
 		token={data.user.token}
 		on:dialogClosed={handleDialogClosed}
 	/>
-{/if}
+{/if} -->

@@ -80,25 +80,25 @@
 			{placeholder}
 			{name}
 			on:change
-			class="border peer block w-full py-1 px-2 rounded-md shadow-sm bg-white text-neutral-900
-                focus:outline-none focus:ring
+			class="border peer block w-full py-1.5 px-2 rounded-md shadow-sm bg-white text-neutral-900
+                focus:outline-none focus:ring ring-indigo-500/20
                 placeholder:text-sm placeholder:font-thin
                 dark:bg-slate-900 dark:text-neutral-100 appearance-none
                 {!isValid
 				? 'border-pink-600 dark:border-pink-500 focus:ring-pink-600/20 dark:focus:ring-pink-600/40'
-				: 'dark:border-slate-600 border-slate-300 focus:ring-sky-500/20 dark:focus:ring-sky-500/30'}
+				: 'dark:border-slate-600 border-slate-300 '}
 				disabled:bg-slate-100 disabled:text-slate-300 disabled:border-slate-300
                 "
 		>
 			<slot />
 		</select>
-		<label
-			for={id}			
-			class="absolute right-0 inset-y-0 w-10 flex text-slate-500
+		<span
+						
+			class="absolute right-0 inset-y-0 w-10 flex text-slate-500 pointer-events-none
             peer-hover:text-blue-500 peer-focus:text-blue-500 {disabled ? "text-slate-300" :""}"
 		>
 			<i class="bi bi-chevron-down m-auto"></i>
-		</label>
+		</span>
 	</div>
 
 	{#if validationText && !isValid}

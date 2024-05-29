@@ -46,12 +46,7 @@
 				<SettingsButton destination="assyst">
 					<i class="bi bi-sliders"></i>
 					<span class="">IFS Assyst </span>
-				</SettingsButton>
-				<SettingsButton destination="historic-data">
-					<i class="bi bi-sliders"></i>
-					<span class=""> Historic Data </span>
-				</SettingsButton>
-
+				</SettingsButton>				
 				<SettingsButton destination="smtp-config">
 					<i class="bi bi-envelope-at-fill"></i>
 					<span> SMTP Configuration </span>

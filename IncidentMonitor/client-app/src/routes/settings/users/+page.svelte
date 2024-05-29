@@ -118,8 +118,7 @@
 	});
 </script>
 
-<div class="p-2">
-	<Button type="button" on:click={loadAssystUsers}>Incident queue users</Button>
+<div class="p-2">	
 	<DataTable on:addnew={handleAddNew} on:refresh={handleRefresh}>
 		<span slot="title" class="space-x-2">
 			<i class="bi bi-people-fill" />
