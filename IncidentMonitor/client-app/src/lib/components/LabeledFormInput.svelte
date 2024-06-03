@@ -8,7 +8,7 @@
 	export let value: string | number | undefined = undefined;
 	export let name: string | undefined = undefined;
 	export let placeholder: string | undefined = undefined;
-	export let validationText: string | undefined = 'This field is required';
+	export let validationText: string | undefined = 'This field is required'; 
 	export let autocomplete: string | undefined = 'off';
 	export let input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | any | undefined =
 		undefined;

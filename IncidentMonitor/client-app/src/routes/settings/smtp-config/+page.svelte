@@ -1,6 +1,5 @@
 <script lang="ts">
 	import Form from '$lib/components/Form.svelte';
-	import FormButton from '$lib/components/FormButton.svelte';
 	import LabeledInput from '$lib/components/LabeledInput.svelte';
 	import LabeldPasswordInput from '$lib/components/LabeledPasswordBox.svelte';
 	import ToggleButton from '$lib/components/ToggleButton.svelte';

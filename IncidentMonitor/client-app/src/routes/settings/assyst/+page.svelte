@@ -15,17 +15,7 @@
 	let isLoading = false;
 	let settings = data.settings;
 
-	// function checkFormValidity(): boolean {
-	// 	const elems: NodeListOf<HTMLInputElement | HTMLSelectElement> =
-	// 		document.querySelectorAll('[data-required=true]');
-	// 	for (const elem of elems) {
-	// 		if (!elem.checkValidity()) {
-	// 			return false;
-	// 		}
-	// 	}
-	// 	return true;
-	// }
-
+	
 	function constructFormData() {
 		const data = new FormData();
 		data.append('id', `${settings.id}`);

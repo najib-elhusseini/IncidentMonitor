@@ -2,51 +2,15 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import Button from '$lib/components/Button.svelte';
 	import Form from '$lib/components/Form.svelte';
-	import LabeledInput from '$lib/components/LabeledInput.svelte';
+	import LabeledFormInput from '$lib/components/LabeledFormInput.svelte';
+
 	import LabeledPasswordBox from '$lib/components/LabeledPasswordBox.svelte';
 	import { localUserKey, loggedInUser, type User } from '$lib/stores/user_store';
 	let isLoading = false;
-
-	async function login(event: SubmitEvent) {
-		event.preventDefault();
-
-		const form = event.target as HTMLFormElement;
-		const toCheck: NodeListOf<HTMLInputElement> = form.querySelectorAll('[data-check="true"]');
-		let valid = true;
-		for (const input of toCheck) {
-			if (!input.checkValidity()) {
-				valid = false;
-				input.setAttribute('data-invalid', 'true');
-			} else {
-				input.removeAttribute('data-invalid');
-			}
-		}
-		if (!valid) {
-			return;
-		}
-		isLoading = true;
-		const data = new FormData(form);
-		const url = '/api/users/Login';
-		const response = await fetch(url, {
-			method: 'POST',
-			body: data
-		});
-		isLoading = false;
-		if (response.ok) {
-			const data: User = await response.json();
-
-			const userData = JSON.stringify(data);
-
-			localStorage.setItem(localUserKey, userData);
-			if (data) {
-				await invalidateAll();
-				loggedInUser.set(data);
-				goto('/');
-			}
-		}
-	}
+	let errorSummary: string = '';
 
 	async function handleSubmit(event: CustomEvent) {
+		errorSummary = '';
 		const data = event.detail as FormData;
 		isLoading = true;
 		const url = '/api/users/Login';
@@ -66,13 +30,23 @@
 				loggedInUser.set(data);
 				goto('/');
 			}
+		} else {
+			switch (response.status) {
+				case 401:
+				case 403:
+					errorSummary = 'Login failed, invalid username or password';
+					break;
+
+				default:
+					break;
+			}
 		}
 	}
 </script>
 
 <div class="flex w-full min-h-screen bg-gradient-to-br from-slate-50 to-slate-300">
-	<div class="mx-auto mt-4 md:mt-20 mb-auto w-full md:w-1/2 lg:w-1/3">
-		<Form isCard={true} allowSubmit={true} on:submit={handleSubmit} {isLoading}>
+	<div class="mx-auto mt-4 md:mt-20 mb-auto w-full md:w-2/3 lg:w-1/2 xl:w-1/3">
+		<Form isCard={true} allowSubmit={true} on:submit={handleSubmit}>
 			<div slot="title" class="flex-grow">
 				<img
 					src="/resources/images/hoist_gear.png"
@@ -83,16 +57,15 @@
 				/>
 				<h2 class="text-2xl font-bold py-4 text-center text-slate-600">Login - Incident Monitor</h2>
 			</div>
-			<div>
-				<LabeledInput
+			<div class="grid grid-cols-1 gap-y-1 my-4">
+				<LabeledFormInput
 					id="userNameInput"
 					name="username"
 					placeholder="Your user name"
 					required={true}
-					label="User Name"
+					labelText="User Name"
+					validationText="Please enter a valid user name"
 				/>
-			</div>
-			<div>
 				<LabeledPasswordBox
 					id="passwordInput"
 					label="Password"
@@ -101,10 +74,15 @@
 					validationText="Please enter a valid password"
 					placeholder="Your password"
 				/>
-			</div>
-
-			<div class="grid my-2">
-				<Button type="submit">
+				{#if errorSummary}
+					<div class="text-pink-500 text-xs text-center space-x-1">
+						<i class="bi bi-exclamation-triangle-fill"></i>
+						<span>
+							{errorSummary}
+						</span>
+					</div>
+				{/if}
+				<Button type="submit" disabled={isLoading}>
 					<span> Login </span>
 				</Button>
 			</div>
