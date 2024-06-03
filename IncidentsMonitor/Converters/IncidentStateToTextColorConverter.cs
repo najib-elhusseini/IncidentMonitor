@@ -11,6 +11,7 @@ using System.Windows.Media;
 
 namespace IncidentMonitor.Converters
 {
+    [Obsolete]
     internal class IncidentStateToTextColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

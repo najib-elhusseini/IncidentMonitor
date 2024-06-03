@@ -11,6 +11,7 @@ using System.Windows.Media;
 
 namespace IncidentMonitor.Converters
 {
+    [Obsolete]
     internal class IncidentStateToBackgroundColorConverter : IValueConverter
     {
 

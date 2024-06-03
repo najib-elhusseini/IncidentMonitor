@@ -28,7 +28,7 @@ export async function load({ fetch }) {
         token = u.token ?? "";
     });
     const config = await getSmtpConfiguration(fetch, token);
-    console.log(config);
+   
     return {
         config
     }

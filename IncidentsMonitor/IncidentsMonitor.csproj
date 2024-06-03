@@ -14,6 +14,7 @@
     <None Remove="Resources\Images\arrow-clockwise.png" />
     <None Remove="Resources\Images\bell-fill-light.png" />
     <None Remove="Resources\Images\buildings-fill.png" />
+    <None Remove="Resources\Images\check-circle-green.png" />
     <None Remove="Resources\Images\envelope-check-fill.png" />
     <None Remove="Resources\Images\envelope_at_fill.png" />
     <None Remove="Resources\Images\exclamation-diamond-fill.png" />
@@ -26,6 +27,8 @@
     <None Remove="Resources\Images\plus-circle-fill.png" />
     <None Remove="Resources\Images\sliders.png" />
     <None Remove="Resources\Images\trash3-fill.png" />
+    <None Remove="Resources\Images\x-circle-orange.png" />
+    <None Remove="Resources\Images\x-circle-red.png" />
     <None Remove="Resources\Sounds\classic-alarm.wav" />
   </ItemGroup>
 
@@ -34,6 +37,12 @@
     <Content Include="Resources\Sounds\classic-alarm.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Images\check-circle-green.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
@@ -64,10 +73,17 @@
     <Resource Include="Resources\Images\plus-circle-fill.png" />
     <Resource Include="Resources\Images\sliders.png" />
     <Resource Include="Resources\Images\trash3-fill.png" />
+    <Resource Include="Resources\Images\x-circle-orange.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\x-circle-red.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Extensions\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>

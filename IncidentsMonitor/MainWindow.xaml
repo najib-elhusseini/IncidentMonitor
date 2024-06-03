@@ -13,7 +13,10 @@
     <Window.Resources>
         <converters:BooleanNotConverter x:Key="BooleanInverseConverter"/>
         <converters:BooleanToVisibilityConverter x:Key="BoolVisibilityConverter"/>
-        
+        <converters:AssystEventStatusConverter x:Key="EventStatusConverter"/>
+        <converters:AssystEventCompanyNameConverter x:Key="CompanyNameConverter"/>
+        <converters:EventAcknowledgeStatusImageConverter x:Key="AcknowledgeStatusImageConverter"/>
+        <converters:EventDateConverter x:Key="EventDateConverter"/>
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -60,7 +63,7 @@
                             Text="Incident Monitor" Foreground="{StaticResource Slate700Brush}" 
                             FontSize="25"/>
                     </StackPanel>
-                   
+
                     <StackPanel Orientation="Horizontal" Grid.Column="1" 
                                 Margin="10,0"
                                 HorizontalAlignment="Right"
@@ -101,17 +104,17 @@
                     <StackPanel Orientation="Horizontal">
                         <Image Source="pack://application:,,,/Resources/Images/exclamation-diamond-fill.png"
                         Width="20" Height="20" VerticalAlignment="Center"
-                        />     
+                        />
                         <TextBlock Text="Some errors have occured" FontWeight="Bold"/>
                     </StackPanel>
                 </GroupBox.Header>
-                    <TextBlock Grid.Row="1"
+                <TextBlock Grid.Row="1"
                        FontSize="14"
                        Text="{Binding ElementName=IncidentsMonitorMainWindow,Path=ErrorMessage}"                       
                        Foreground="Red"
                        />
             </GroupBox>
-        
+
 
 
             <DataGrid 
@@ -120,18 +123,49 @@
                       AutoGenerateColumns="False" 
                       IsReadOnly="True" 
                       Grid.ColumnSpan="2">
+
                 <DataGrid.Columns>
                     <DataGridTextColumn FontWeight="Bold" Width="100" IsReadOnly="True" Header="#" 
-                                        Binding="{Binding IncidentName}"/>
-                    <DataGridTextColumn Width="*" IsReadOnly="True" Header="Title" Binding="{Binding Title}">
+                                        Binding="{Binding FormattedReference}"/>
+                  
+                    <DataGridTemplateColumn Header="Acknowledged" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Height="20" Width="20" Source="{Binding Converter={StaticResource AcknowledgeStatusImageConverter}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
+                    <DataGridTextColumn Width="*" IsReadOnly="True" Header="Description" Binding="{Binding ShortDescription}">
                         <DataGridTextColumn.ElementStyle>
                             <Style>
                                 <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="User" Binding="{Binding Client.Username}"/>
-                    <DataGridTextColumn Header="Queue" Binding="{Binding QueueName}"/>
+                    <DataGridTemplateColumn Header="User">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Vertical">
+                                    <TextBlock Text="{Binding AffectedUserName}"/>
+                                    <TextBlock Text="{Binding AffectedUserEmail}" FontSize="12"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Queue" Binding="{Binding AssignedServDept.Name}"/>
+                    <DataGridTextColumn Header="Company" Binding="{Binding Converter={StaticResource CompanyNameConverter}}"/>
+                    <DataGridTextColumn Header="Date Logged" Binding="{Binding Converter={StaticResource EventDateConverter}}"/>
+                    <DataGridTextColumn Header="Status"  Binding="{Binding Converter={StaticResource EventStatusConverter}}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style>
+                                <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <!--
+                    
+                   
                     <DataGridTextColumn Header="Client" Width="120" Binding="{Binding ClientAccountName}">
                         <DataGridTextColumn.ElementStyle>
                             <Style>
@@ -147,11 +181,11 @@
                             </Style>
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="Responded" Binding="{Binding RespondedStatus}" Width="50"/>
+                    <DataGridTextColumn Header="Responded" Binding="{Binding RespondedStatus}" Width="50"/>-->
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
-        
+
     </DockPanel>
 
 </Window>

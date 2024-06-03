@@ -139,6 +139,7 @@ namespace IncidentMonitor.Controllers
 
                 foreach (var evet in events)
                 {
+                    
                     var status = evet.GetEventAcknowledgedStatus(user);
                     evet.EventAcknowledgedStatus = status;
 

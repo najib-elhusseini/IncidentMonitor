@@ -1,5 +1,7 @@
 ﻿using IncidentMonitor.DataLayer.Helpers;
+using IncidentMonitor.DataLayer.Models;
 using IncidentMonitor.Models;
+using IncidentMonitor.Models.Assyst;
 using IncidentMonitor.Models.RemedyForce;
 using IncidentMonitor.Settings;
 using System;
@@ -9,8 +11,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Media;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,8 +33,9 @@ namespace IncidentMonitor
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string _baseUrl = "https://localhost:7217/api";
         bool _firstRun = true;
-        NotificationUser? _loggedInUser;
+        ApplicationUserViewModel? _loggedInUser;
         internal static MainWindow? Instance { get; private set; }
 
         #region Dependency Props
@@ -107,11 +112,11 @@ namespace IncidentMonitor
 
         public AppCompany DefaultCompany { get; set; }
 
-        private ObservableCollection<Incident> Incidents { get; set; } = new ObservableCollection<Incident>();
+        private ObservableCollection<EventDto> Events { get; set; } = new();
 
         DataLayerHelper DataLayerHelper { get; set; }
 
-        NotificationUser? LoggedInUser
+        ApplicationUserViewModel? LoggedInUser
         {
             get => _loggedInUser; set
             {
@@ -143,12 +148,7 @@ namespace IncidentMonitor
             base.OnContentRendered(e);
             if (_firstRun)
             {
-                // For readability, do not use the new new() , that was readable :)
-                DataLayerHelper = new DataLayerHelper(GetAppDirectory())
-                {
-                    OnHelpersInitialized = InitializePageData
-                };
-
+                InitializePageData();
                 _firstRun = false;
             }
 
@@ -156,10 +156,10 @@ namespace IncidentMonitor
 
         private async void InitializePageData()
         {
-            var loginDialog = new LoginDialogWindow(DataLayerHelper.NotificationUsersHelper, LoggedInUser)
+            var loginDialog = new LoginDialogWindow(null)
             {
                 Owner = this,
-                LoggedInUser = this.LoggedInUser
+
             };
             var result = loginDialog.ShowDialog();
             if (!result == true) // result !=true :) stupid not
@@ -169,23 +169,23 @@ namespace IncidentMonitor
             }
             LoggedInUser = loginDialog.LoggedInUser;
 
-            if (
-                DataLayerHelper.RemedyForceSettings == null
-                ||
-                DataLayerHelper.RemedyForceSettingsHelper == null
-                )
-            {
-                //SettingsValid = false;
-                return;
-            }
+            //if (
+            //    DataLayerHelper.RemedyForceSettings == null
+            //    ||
+            //    DataLayerHelper.RemedyForceSettingsHelper == null
+            //    )
+            //{
+            //    //SettingsValid = false;
+            //    return;
+            //}
 
-            if (!DataLayerHelper.RemedyForceSettings.ValidateSettings())
-            {
-                //SettingsValid = false;
-                return;
+            //if (!DataLayerHelper.RemedyForceSettings.ValidateSettings())
+            //{
+            //    //SettingsValid = false;
+            //    return;
 
-            }
-            DefaultCompany = await DataLayerHelper.CompaniesHelper.GetDefaultCompanyAsync();
+            //}
+            //DefaultCompany = await DataLayerHelper.CompaniesHelper.GetDefaultCompanyAsync();
 
 
             await CheckIncidents();
@@ -220,38 +220,59 @@ namespace IncidentMonitor
             {
                 return;
             }
-
-            if (DataLayerHelper.RemdyForceIncidentsHelper == null)
+            if (LoggedInUser == null || string.IsNullOrEmpty(LoggedInUser.Token))
             {
-                SettingsValid = false;
                 return;
             }
+            Events.Clear();
+            var url = $"{_baseUrl}/assyst/GetTodayIncidents";
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", LoggedInUser.Token);
 
-            IsLoading = true;
-            Incidents.Clear();
+            //if (DataLayerHelper.RemdyForceIncidentsHelper == null)
+            //{
+            //    SettingsValid = false;
+            //    return;
+            //}
+
+            //IsLoading = true;
+            //Incidents.Clear();
 
             try
-            {             
-                var incidents = await DataLayerHelper
-                               .RemdyForceIncidentsHelper
-                               .GetIncidents(Today.ToUniversalTime());
-
-                foreach (var incident in incidents)
+            {
+                var response = await client.GetAsync(url);
+                var responseText = await response.Content.ReadAsStringAsync();
+                response.EnsureSuccessStatusCode();
+                var _events = JsonSerializer.Deserialize<IEnumerable<EventDto>>(responseText);
+                if(_events == null || !_events.Any())
                 {
-                    Incidents.Add(incident);
-                }
-                IncidentsGrid.ItemsSource = Incidents;
+                    return; 
 
-                NotifyUnresponded();
+                }
+                foreach (var @event in _events)
+                {
+                    Events.Add(@event);
+
+                }
+
+                //    var incidents = await DataLayerHelper
+                //                   .RemdyForceIncidentsHelper
+                //                   .GetIncidents(Today.ToUniversalTime());
+
+                //    foreach (var incident in incidents)
+                //    {
+                //        Incidents.Add(incident);
+                //    }
+                IncidentsGrid.ItemsSource = Events;
+
+                //NotifyUnresponded();
             }
             catch (Exception ex)
             {
                 HasLoadingErrors = true;
-                ErrorMessage = $"{ex.ToString()}";
-                if (Timer != null)
-                {
-                    Timer.Stop();
-                }
+                ErrorMessage = $"{ex}";
+                Timer?.Stop();
             }
             finally
             {
@@ -267,55 +288,55 @@ namespace IncidentMonitor
         /// </summary>
         private void NotifyUnresponded()
         {
-            var unseenNotifications = Incidents
-                .Where(i =>
-                i.RespondedDateTime == null &&
-                i.IncidentCreationDate != null &&
-                i.IncidentCreationDate >= Today &&
-                DefaultCompany.IsWithinShift(i.IncidentCreationDate.Value)
-                );
+            //var unseenNotifications = Incidents
+            //    .Where(i =>
+            //    i.RespondedDateTime == null &&
+            //    i.IncidentCreationDate != null &&
+            //    i.IncidentCreationDate >= Today &&
+            //    DefaultCompany.IsWithinShift(i.IncidentCreationDate.Value)
+            //    );
 
-            if (unseenNotifications.Any())
-            {
-                if (DefaultCompany.Settings.EnableEmailNotifications == true)
-                {
-                    _ = EmailUnrespondedIncidents(unseenNotifications);
-                }
-                if (DefaultCompany.Settings.EnableAlarmNotifications == true)
-                {
-                    PlayAlarm();
-                }
-            }
+            //if (unseenNotifications.Any())
+            //{
+            //    if (DefaultCompany.Settings.EnableEmailNotifications == true)
+            //    {
+            //        _ = EmailUnrespondedIncidents(unseenNotifications);
+            //    }
+            //    if (DefaultCompany.Settings.EnableAlarmNotifications == true)
+            //    {
+            //        PlayAlarm();
+            //    }
+            //}
 
         }
 
         private async void NotifyAll()
         {
 
-            var notifications = Incidents
-                .Where(i => i.IncidentCreationDate >= Today);
-            if (!notifications.Any())
-            {
-                return;
-            }
+            //var notifications = Incidents
+            //    .Where(i => i.IncidentCreationDate >= Today);
+            //if (!notifications.Any())
+            //{
+            //    return;
+            //}
 
-            IsLoading = true;
-            if (DefaultCompany.Settings.EnableAlarmNotifications == true)
-            {
-                PlayAlarm();
-            }
-            if (DefaultCompany.Settings.EnableEmailNotifications == true)
-            {
-                var smtpHelper = DataLayerHelper.SmtpSettingsHelper;
+            //IsLoading = true;
+            //if (DefaultCompany.Settings.EnableAlarmNotifications == true)
+            //{
+            //    PlayAlarm();
+            //}
+            //if (DefaultCompany.Settings.EnableEmailNotifications == true)
+            //{
+            //    var smtpHelper = DataLayerHelper.SmtpSettingsHelper;
 
-                var emailConfig = await smtpHelper.GetEmailConfigurationAsync() ?? throw new NotImplementedException();
-                var emailHelper = new EmailHelper(emailConfig);
+            //    var emailConfig = await smtpHelper.GetEmailConfigurationAsync() ?? throw new NotImplementedException();
+            //    var emailHelper = new EmailHelper(emailConfig);
 
-                var usersToNotifyHelper = DataLayerHelper.NotificationUsersHelper;
-                var usersToNotify = await usersToNotifyHelper.GetUsersToNotifyAsync();
+            //    var usersToNotifyHelper = DataLayerHelper.NotificationUsersHelper;
+            //    var usersToNotify = await usersToNotifyHelper.GetUsersToNotifyAsync();
 
-                await emailHelper.SendIncidentsNotificationEmailAsync(notifications, usersToNotify);
-            }
+            //    await emailHelper.SendIncidentsNotificationEmailAsync(notifications, usersToNotify);
+            //}
 
             IsLoading = false;
 
@@ -327,14 +348,14 @@ namespace IncidentMonitor
         {
             IsLoading = true;
 
-            var smtpHelper = DataLayerHelper.SmtpSettingsHelper;
-            // TODO : handle null case exception
-            var emailConfig = await smtpHelper.GetEmailConfigurationAsync() ?? throw new NotImplementedException();
-            var emailHelper = new EmailHelper(emailConfig);
+            //var smtpHelper = DataLayerHelper.SmtpSettingsHelper;
+            //// TODO : handle null case exception
+            //var emailConfig = await smtpHelper.GetEmailConfigurationAsync() ?? throw new NotImplementedException();
+            //var emailHelper = new EmailHelper(emailConfig);
 
-            var usersToNotifyHelper = DataLayerHelper.NotificationUsersHelper;
-            var usersToNotify = await usersToNotifyHelper.GetUsersToNotifyAsync();
-            await emailHelper.SendUnrespondedNotificationEmailsAsync(incidents, usersToNotify);
+            //var usersToNotifyHelper = DataLayerHelper.NotificationUsersHelper;
+            //var usersToNotify = await usersToNotifyHelper.GetUsersToNotifyAsync();
+            //await emailHelper.SendUnrespondedNotificationEmailsAsync(incidents, usersToNotify);
 
             IsLoading = false;
 
@@ -367,9 +388,10 @@ namespace IncidentMonitor
             Application.Current.Shutdown();
 
         }
+
         private void CompanyMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var companyWindow = new Settings.Company(DataLayerHelper.CompaniesHelper)
+            var companyWindow = new Company(DataLayerHelper.CompaniesHelper)
             {
                 Owner = this,
             };
@@ -403,7 +425,7 @@ namespace IncidentMonitor
 
         private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            Incidents.Clear();
+            Events.Clear();
             Timer.Stop();
             InitializePageData();
         }
@@ -411,16 +433,16 @@ namespace IncidentMonitor
         private void ChangePasswordMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // This should never occur, but better be safe than sorry
-            if (LoggedInUser == null)
-            {
-                throw new NotImplementedException();
-            }
+            //if (LoggedInUser == null)
+            //{
+            throw new NotImplementedException();
+            //}
 
-            var dialog = new ChangePasswordDialog(DataLayerHelper.NotificationUsersHelper, LoggedInUser)
-            {
-                Owner = this,
-            };
-            dialog.ShowDialog();
+            //var dialog = new ChangePasswordDialog(DataLayerHelper.NotificationUsersHelper, LoggedInUser)
+            //{
+            //    Owner = this,
+            //};
+            //dialog.ShowDialog();
 
         }
 

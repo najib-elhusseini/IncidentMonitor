@@ -68,7 +68,7 @@
 	</DataTableCell>
 	<DataTableCell>
 		{#if event.dateLogged}
-			<DatePresenter date={event.dateLogged} />
+			<DatePresenter date={event.dateLogged} /> 
 		{/if}
 	</DataTableCell>
 	<DataTableCell>

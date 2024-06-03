@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -104,7 +105,7 @@ namespace IncidentMonitor.Models.Assyst
         [JsonPropertyName("bundleComponentSortOrder")]
         public int? BundleComponentSortOrder { get; set; }
 
-
+        
         /// <summary>
         /// 
         /// Data Type : eventDto

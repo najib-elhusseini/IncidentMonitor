@@ -1,9 +1,13 @@
 ﻿using IncidentMonitor.DataLayer.Helpers;
+using IncidentMonitor.DataLayer.Models;
 using IncidentMonitor.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,27 +26,22 @@ namespace IncidentMonitor
     /// </summary>
     public partial class LoginDialogWindow : Window
     {
-        private NotificationUsersHelper usersHelper;
+        //private NotificationUsersHelper usersHelper;
 
-        public NotificationUser? LoggedInUser { get; set; } = null;
+        public ApplicationUserViewModel? LoggedInUser { get; set; } = null;
+        private const string _baseUrl = "https://localhost:7217/api";
 
 
 
-        //public LoginDialogWindow(NotificationUsersHelper helper)
-        //{
-        //    usersHelper = helper;
-        //    InitializeComponent();
-        //}
-
-        public LoginDialogWindow(NotificationUsersHelper helper, NotificationUser? user)
+        public LoginDialogWindow(ApplicationUserViewModel? user)
         {
-            usersHelper = helper;
             LoggedInUser = user;
             InitializeComponent();
             if (LoggedInUser != null)
             {
                 UsernameTextBox.Text = LoggedInUser.Email;
             }
+            UsernameTextBox.Focus();
         }
 
 
@@ -55,7 +54,9 @@ namespace IncidentMonitor
 
         private void BtnLogin_Click(object sender, RoutedEventArgs e)
         {
+            BtnLogin.IsEnabled = false;
             Login();
+            BtnLogin.IsEnabled = true;
 
         }
 
@@ -69,21 +70,31 @@ namespace IncidentMonitor
 
         async void Login()
         {
+
             if (string.IsNullOrEmpty(PasswordTextBox.Password) || string.IsNullOrEmpty(UsernameTextBox.Text))
             {
                 ResultsTextBlock.Text = "Please enter a user name and password";
                 return;
             }
 
-            var result = await usersHelper.GetUserByEmailAsync(UsernameTextBox.Text, true);
-
-            if (result != null && result.AppPassword == PasswordTextBox.Password)
+            var url = $"{_baseUrl}/users/login";
+            var client = new HttpClient();
+            var content = new FormUrlEncodedContent(new[]
             {
-                LoggedInUser = result;
+                new KeyValuePair<string, string>("username",UsernameTextBox.Text),
+                new KeyValuePair<string, string>("password",PasswordTextBox.Password)
+            });
+         
+            var response = await client.PostAsync(url, content);
+            var responseText = await response.Content.ReadAsStringAsync();
+            if(response.IsSuccessStatusCode)
+            {
+                LoggedInUser = JsonSerializer.Deserialize<ApplicationUserViewModel>(responseText);
                 DialogResult = true;
-
                 return;
             }
+
+
 
 
             ResultsTextBlock.Text = "Invalid user name or password";

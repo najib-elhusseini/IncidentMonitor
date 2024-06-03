@@ -13,7 +13,7 @@ namespace IncidentMonitor.DataLayer.Models
 {
     public class ApplicationUser : IdentityUser, IHelpDeskObject
     {
-      
+
         public string? FirstName { get; set; }
 
         public string? LastName { get; set; }
@@ -107,6 +107,99 @@ namespace IncidentMonitor.DataLayer.Models
         [NotMapped]
         [JsonPropertyName("companySiteName")]
         public string CompanySiteName => CompanySite?.CompanyName ?? "";
+
+    }
+
+    public class ApplicationUserViewModel
+    {
+        public ApplicationUserViewModel()
+        {
+            Id = string.Empty;
+        }
+        public ApplicationUserViewModel(ApplicationUser u)
+        {
+            Id = u.Id;
+            FirstName = u.FirstName;
+            LastName = u.LastName;
+            Email = u.Email;
+            UserName = u.UserName ?? "";
+            FullName = u.FullName;
+            Token = "";
+            IsAdmin = u.IsAdmin;
+            RoleName = u.RoleName;
+            IsActive = u.IsActive;
+            EnableEmailNotifications = u.EnableEmailNotifications;
+            CompanySiteId = u.CompanySiteId;
+            ShiftStartHours = u.ShiftStartHours;
+            ShiftStartMinutes = u.ShiftStartMinutes;
+            ShiftEndHours = u.ShiftEndHours;
+            ShiftEndMinutes = u.ShiftEndMinutes;
+            TzOffset = u.TimeZoneOffset;
+            CompanySiteName = u.CompanySiteName;
+        }
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("firstName")]
+        public string? FirstName { get; set; }
+
+        [JsonPropertyName("lastName")]
+        public string? LastName { get; set; }
+
+        [JsonPropertyName("email")]
+        public string? Email { get; set; }
+
+        [JsonPropertyName("userName")]
+        public string? UserName { get; set; }
+
+        [JsonPropertyName("fullName")]
+        public string? FullName { get; set; }
+
+        [JsonPropertyName("token")]
+        public string? Token { get; set; }
+
+        [JsonPropertyName("isAdmin")]
+        public bool? IsAdmin { get; set; }
+
+        [JsonPropertyName("roleName")]
+        public string? RoleName { get; set; }
+
+        [JsonPropertyName("lastLoginDate")]
+        public DateTime? LastLoginDate { get; set; }
+
+        [JsonPropertyName("loginValidUntil")]
+        public DateTime? LoginValidUntil { get; set; }
+
+        [JsonPropertyName("companySiteId")]
+        public int? CompanySiteId { get; set; }
+
+        [JsonPropertyName("isActive")]
+        public bool? IsActive { get; set; }
+
+        [JsonPropertyName("enableEmailNotifications")]
+        public bool? EnableEmailNotifications { get; set; }
+
+        [JsonPropertyName("shiftStartHours")]
+        public int? ShiftStartHours { get; set; }
+
+        [JsonPropertyName("shiftEndHours")]
+        public int? ShiftEndHours { get; set; }
+
+        [JsonPropertyName("shiftStartMinutes")]
+        public int? ShiftStartMinutes { get; set; }
+
+        [JsonPropertyName("shiftEndMinutes")]
+        public int? ShiftEndMinutes { get; set; }
+
+        [JsonPropertyName("tzOffset")]
+        public int? TzOffset { get; set; }
+
+        [JsonPropertyName("companySiteName")]
+        public string? CompanySiteName { get; set; }
+
+
+
 
     }
 }

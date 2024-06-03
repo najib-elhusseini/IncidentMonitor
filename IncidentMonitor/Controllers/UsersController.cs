@@ -64,28 +64,7 @@ namespace IncidentMonitor.Controllers
             }
             var users = DataLayerHelper.UsersHelper.GetAll()
                 .OrderBy(u => u.UserName)
-                .Select(u => new
-                {
-                    id = u.Id,
-                    firstName = u.FirstName,
-                    lastName = u.LastName,
-                    email = u.Email,
-                    userName = u.UserName ?? "",
-                    fullName = u.FullName,
-                    token = "",
-                    isAdmin = u.IsAdmin,
-                    roleName = u.RoleName,
-                    isActive = u.IsActive,
-                    enableEmailNotifications = u.EnableEmailNotifications,
-                    companySiteId = u.CompanySiteId,
-                    shiftStartHours = u.ShiftStartHours,
-                    shiftStartMinutes = u.ShiftStartMinutes,
-                    shiftEndHours = u.ShiftEndHours,
-                    shiftEndMinutes = u.ShiftEndMinutes,
-                    tzOffset = u.TimeZoneOffset,
-                    companySiteName = u.CompanySiteName,
-
-                });
+                .Select(u => new ApplicationUserViewModel(u));
             return Ok(users);
         }
 

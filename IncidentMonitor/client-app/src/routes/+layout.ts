@@ -35,6 +35,7 @@ export async function load({ }) {
         }
     }
     loggedInUser.set(user);
+    
 
     return {
         user: { ...user },
