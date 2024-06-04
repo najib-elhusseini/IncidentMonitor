@@ -6,6 +6,10 @@
 	export let disabled = false;
 	let isOpen = false;
 	let menu: HTMLDivElement;
+	const hyperlinkClassNames = `px-2 py-1 text-slate-500
+                                hover:bg-slate-500/20 flex space-x-2 w-full
+                                transition-all ease-in-out active:bg-slate-500 active:text-slate-50
+                                focus:outline-none`;
 
 	function openMenu() {
 		isOpen = true;
@@ -69,14 +73,7 @@
 							</a>
 						</li>
 						<li>
-							<a
-								href="/assyst"
-								class="px-2 py-1 text-slate-500
-                                hover:bg-slate-500/20 flex space-x-2 w-full
-                                transition-all ease-in-out active:bg-slate-500 active:text-slate-50
-                                focus:outline-none
-                            "
-							>
+							<a href="/assyst" class={hyperlinkClassNames}>
 								<img
 									src="/resources/images/IFS_Logo.png"
 									width="20"
@@ -84,9 +81,13 @@
 									class="object-scale-down"
 									alt="IFS Logo"
 								/>
-								<span>
-									IFS Assyst
-								</span>
+								<span> IFS Assyst </span>
+							</a>
+						</li>
+						<li>
+							<a href="/reports" class={hyperlinkClassNames}>
+								<i class="bi bi-file-text"></i>
+								<span> Reports </span>
 							</a>
 						</li>
 					{/if}

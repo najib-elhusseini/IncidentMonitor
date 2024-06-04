@@ -2,7 +2,7 @@
 	export type PopupMenuItem = {
 		id: number;
 		content: string;
-		action: (param?: any | undefined) => {};
+		action: (param?: any | undefined) => {} | any | void;
 		disabled?: boolean;
 	};
 </script>
@@ -113,8 +113,8 @@
 					type="button"
 					class="mx-1 w-9 h-9 bg-white border border-slate-300
 					text-slate-500
-					hover:bg-slate-100 rounded-full my-auto 
-					disabled:bg-slate-100 disabled:text-slate-300					
+					hover:bg-slate-100 rounded-full my-auto
+					disabled:bg-slate-100 disabled:text-slate-300
 					 transition-all ease-in-out duration-150"
 				>
 					<i

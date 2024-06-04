@@ -1,10 +1,13 @@
-export function exportCsv(lines: [string[]], title: string) {
+export function exportCsv(lines: string[][], title: string) {
 
+    if (!title.endsWith('.csv')) {
+        title = title + '.csv'
+    }
     let csvContent = '';
     for (const line of lines) {
-        let _line:string[]=[];
+        let _line: string[] = [];
         for (let cell of line) {
-            cell = cell.replace('\r\n','').replace('\n','').replace(',','~');
+            cell = cell.replace('\r\n', '').replace('\n', '').replace(',', '~');
             _line.push(cell);
         }
         const lineString = _line.join(',');

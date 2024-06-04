@@ -27,7 +27,7 @@ namespace IncidentMonitor.DataLayer.Helpers
         {
         }
 
-        private string GetEventFields()
+        private string GetEventFields(params string[] additionalFields)
         {
             var fields = new List<string>()
             {
@@ -53,11 +53,18 @@ namespace IncidentMonitor.DataLayer.Helpers
                 "assignedUser[name,emailAddress]",
                 "department[id,sectionDepartmentName,sectionDepartmentShortCode,section[name]]",
                 "assignedServDept[id,name,shortCode]",
-                "actions[id,richRemarks,actionTypeId,actionType[id,name]]",
+                "actions[id,richRemarks,actionTypeId,actionType[id,name],modifyDate,dateActioned]",
                 "lastSlaClockStop",
-
-
             };
+            foreach (var field in additionalFields)
+            {
+                if (string.IsNullOrWhiteSpace(field))
+                {
+                    continue;
+                }
+                fields.Add(field);
+            }
+            
             //StringBuilder sb = new StringBuilder();
             //foreach (var field in fields)
             //{
@@ -117,9 +124,9 @@ namespace IncidentMonitor.DataLayer.Helpers
             }
         }
 
-        public async Task<IEnumerable<EventDto>?> GetEventsAsync(string query)
+        public async Task<IEnumerable<EventDto>?> GetEventsAsync(string query, params string[] additionalFields)
         {
-            var fields = GetEventFields();
+            var fields = GetEventFields(additionalFields);
             query = $"{query}&fields={fields}";
             try
             {
@@ -129,7 +136,7 @@ namespace IncidentMonitor.DataLayer.Helpers
                 var responseText = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
                 var events = JsonSerializer.Deserialize<IEnumerable<EventDto>>(responseText);
-                return events;
+                return events; 
             }
             catch (Exception ex)
             {
@@ -170,6 +177,7 @@ namespace IncidentMonitor.DataLayer.Helpers
             {
                 return null;
             }
+
             //foreach (var evnt in events)
             //{
             //    if (evnt.LastSlaClockStop == null)
@@ -346,7 +354,7 @@ namespace IncidentMonitor.DataLayer.Helpers
             return actions;
         }
 
-        
+
         public async Task<EventDto?> CreateEventAsync(EventDto eventDto, string onBehalfOfUser)
         {
             var endPoint = $"events";
@@ -376,7 +384,7 @@ namespace IncidentMonitor.DataLayer.Helpers
             var response = await client.PostAsync(url, stringContent);
             var responseText = await response.Content.ReadAsStringAsync();
             response.EnsureSuccessStatusCode();
-            var evt = JsonSerializer.Deserialize<EventDto>(responseText);            
+            var evt = JsonSerializer.Deserialize<EventDto>(responseText);
             return evt;
         }
 

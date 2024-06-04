@@ -436,93 +436,41 @@ export interface ClientUpdatableEventDto extends AssystBaseCSGDto {
 
 
     templateProcessId?: number,
-
-
     /**
      * 
 /// Data Type : priorityDto
 /// Element:<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:axios="http://www.axiossystems.com/assystREST/schema" axios:resourcePath="/priorities" minOccurs="0" name="urgency" type="priorityDto"/>
     */
-
     urgency?: any,
-
-
     urgencyId?: number,
-
-
     user1FieldChar1?: string,
-
-
     user1FieldChar1Id?: number,
-
-
     user1FieldChar2?: string,
-
-
     user1FieldChar2Id?: number,
-
-
     user1FieldChar3?: string,
-
-
     user1FieldChar3Id?: number,
-
-
     user1FieldDate1?: Date,
-
-
     user1FieldDate2?: Date,
-
-
     user1FieldDate3?: Date,
-
-
     user1FieldDec1?: number,
-
-
     user1FieldDec2?: number,
-
-
     user1FieldDec3?: number,
-
-
     user2FieldChar1?: string,
-
-
     user2FieldChar1Id?: number,
-
-
     user2FieldChar2?: string,
-
-
     user2FieldChar2Id?: number,
-
-
     user2FieldChar3?: string,
-
-
     user2FieldChar3Id?: number,
-
-
     user2FieldDate1?: Date,
-
-
     user2FieldDate2?: Date,
-
-
     user2FieldDate3?: Date,
-
-
     user2FieldDec1?: number,
-
-
     user2FieldDec2?: number,
-
-
     user2FieldDec3?: number,
-
-
     userReference?: string,
+
+    customerCaseId?: string,
+    isAwaitingVendor?: boolean
 
 }
 
@@ -1224,7 +1172,7 @@ Element:<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:axios="htt
      * <xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" minOccurs="0" ref="serviceOffering"/>
      */
 
-    serviceOffering?:ServiceOfferingDto,
+    serviceOffering?: ServiceOfferingDto,
 
     serviceOfferingId?: number,
 
@@ -1665,3 +1613,19 @@ export function getEventFormattedStatus(event: EventDto): string {
     // {/if}
 
 }
+
+export function getEventAction(event: EventDto, actionTypeQuery: string | number) {
+    if (!event.actions) {
+        return undefined;
+    }
+
+    const action = event.actions.filter(a => {
+        if (typeof actionTypeQuery === 'number') {
+            return a.actionTypeId === actionTypeQuery;
+        }
+        if (!a.actionType) return false;
+        return a.actionType.shortCode === actionTypeQuery
+    });
+    return action
+}
+

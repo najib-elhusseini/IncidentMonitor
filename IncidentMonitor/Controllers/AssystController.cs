@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using IncidentMonitor.DataLayer.Data;
+using Microsoft.VisualBasic;
 
 namespace IncidentMonitor.Controllers
 {
@@ -98,6 +99,7 @@ namespace IncidentMonitor.Controllers
         }
 
         [HttpGet]
+        [Obsolete("No longer used, should be removed on next push")]
         public async Task<IActionResult> GetLastEvent()
         {
             throw new NotImplementedException();
@@ -139,7 +141,7 @@ namespace IncidentMonitor.Controllers
 
                 foreach (var evet in events)
                 {
-                    
+
                     var status = evet.GetEventAcknowledgedStatus(user);
                     evet.EventAcknowledgedStatus = status;
 
@@ -189,62 +191,7 @@ namespace IncidentMonitor.Controllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> AcknowledgeEventAsync()
-        //{
-        //    var user = await CheckAuthorizationHeader(false);
-        //    if (user == null)
-        //    {
-        //        return Unauthorized();
-        //    }
-        //    if (DataLayerHelper.AssystEventsHelper == null)
-        //    {
-        //        return BadRequest();
-        //    }
 
-        //    try
-        //    {
-        //        var shortCode = Request.Form.TryParseString("shortCode");
-        //        var eventId = Request.Form.TryParseInt("eventId");
-        //        var remarks = Request.Form.TryParseString("remarks") ?? "";
-        //        if (eventId == null)
-        //        {
-        //            return BadRequest();
-        //        }
-        //        var action = await DataLayerHelper.AssystEventsHelper.PostEventAction(
-        //            eventId.Value,
-        //            null,
-        //            AssystEventsHelper.AcknowledgmentActionTypeId,
-        //            remarks,
-        //            shortCode
-        //            );
-        //        if (action != null)
-        //        {
-        //            await _incidentBackgroundMonitorService.GetIncidents();
-        //            var events = _incidentBackgroundMonitorService.Incidents;
-        //            foreach (var evet in events)
-        //            {
-        //                var status = evet.GetEventAcknowledgedStatus(user);
-        //                evet.EventAcknowledgedStatus = status;
-
-        //            }
-        //            return Ok(events);
-        //        }
-
-        //        return StatusCode(StatusCodes.Status500InternalServerError);
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        throw;
-        //    }
-
-
-
-
-
-        //}
 
         [HttpPost]
         public async Task<IActionResult> PostEventAction()
@@ -323,6 +270,7 @@ namespace IncidentMonitor.Controllers
         }
 
         [HttpGet]
+        [Obsolete(message: "Please user QueryEvents that will also return a search result count instead")]
         public async Task<IActionResult> SearchEvents(string searchQuery)
         {
             var user = await CheckAuthorizationHeader(false);
@@ -339,6 +287,36 @@ namespace IncidentMonitor.Controllers
 
             return Ok(events);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> QueryEvents(string searchQuery, int? skip, int? top, string? additionalFields)
+        {
+            var user = await CheckAuthorizationHeader(false);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            if (DataLayerHelper.AssystEventsHelper == null)
+            {
+                return BadRequest();
+            }
+            skip ??= 0;
+            top ??= 100;
+            var count = await DataLayerHelper.AssystEventsHelper.GetSearchResultCount(searchQuery);
+            var query = searchQuery; //$"{searchQuery}&$skip={skip.Value}&$top={top.Value}";
+            additionalFields ??= string.Empty;
+            var fields = additionalFields.Split(',');
+            var result = await DataLayerHelper.AssystEventsHelper.GetEventsAsync(query, fields);
+            
+
+            return Ok(new
+            {
+                count,
+                result
+            });
+
+        }
+
 
 
 

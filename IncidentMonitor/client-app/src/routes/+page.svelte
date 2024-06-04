@@ -210,16 +210,7 @@
 	<Header user={data.user} {isLoading}>
 		<div class="flex w-full">
 			<div class="ml-auto my-auto flex space-x-2">
-				<!-- <a
-					href="/incident-search"
-					class="px-2 py-1.5 text-slate-500 hover:text-indigo-600 active:text-indigo-500
-							transition-all ease-in-out duration-300
-							disabled:text-slate-300"
-				>
-					<i class="bi bi-search"></i>
-					<span>RF Search </span>
-				</a>
-				 -->
+				
 				<Link href="/assyst/event-search">
 					<i class="bi bi-search"></i>
 					<span>Assyst Event Search </span>
@@ -243,7 +234,7 @@
 				<DataTableCell isHeader={true}>
 					<i class="bi bi-headset"></i>
 				</DataTableCell>
-				<DataTableCell isHeader={true}>Title</DataTableCell>
+				<DataTableCell isHeader={true}>Summary</DataTableCell>
 				<DataTableCell isHeader={true}>Affected User</DataTableCell>
 				<DataTableCell isHeader={true}>Queue/SevDept</DataTableCell>
 				<DataTableCell isHeader={true}>Assigned User</DataTableCell>

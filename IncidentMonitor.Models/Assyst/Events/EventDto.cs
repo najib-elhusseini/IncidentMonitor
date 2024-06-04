@@ -105,7 +105,7 @@ namespace IncidentMonitor.Models.Assyst
         [JsonPropertyName("bundleComponentSortOrder")]
         public int? BundleComponentSortOrder { get; set; }
 
-        
+
         /// <summary>
         /// 
         /// Data Type : eventDto
@@ -1773,6 +1773,25 @@ namespace IncidentMonitor.Models.Assyst
             }
         }
 
+        [JsonPropertyName("isAwaitingVendor")]
+        public bool? isAwaitingVendor
+        {
+            get
+            {
+                if (CustomFields == null || !CustomFields.Any())
+                {
+                    return null;
+                }
+
+                var field = CustomFields.FirstOrDefault(cf => cf?.CustomFieldShortCode == "AWAITING VENDOR");
+                if (field == null)
+                {
+                    return null;
+                }
+                return field.BooleanValue;
+            }
+        }
+
         /// <summary>
         /// This is a custom field not present in Assyst
         /// It is a flag to signify that a particular event is acknowledged
@@ -1796,7 +1815,7 @@ namespace IncidentMonitor.Models.Assyst
 
 
         public EventAcknowledgedStatus GetEventAcknowledgedStatus(IHelpDeskObject helpDeskUser)
-        {
+        {          
 
             if (DateLogged == null)
             {
@@ -1852,6 +1871,7 @@ namespace IncidentMonitor.Models.Assyst
                 AffectedUserEmail = value;
             }
         }
+
         public string? TicketAssignedUser
         {
             get
@@ -1903,8 +1923,6 @@ namespace IncidentMonitor.Models.Assyst
         }
 
         public DateTime? TicketCreationDate => DateLogged;
-
-
 
         public HelpDeskSeriousness? HelpDeskImpact
         {

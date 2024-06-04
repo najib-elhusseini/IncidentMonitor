@@ -3,7 +3,7 @@
 	import UserMenu from './UserMenu.svelte';
 
 	export let user: User;
-	export let isLoading: boolean;
+	export let isLoading: boolean = false;
 </script>
 
 <header class="p-2 bg-white border-b border-b-slate-400 shadow-md flex">

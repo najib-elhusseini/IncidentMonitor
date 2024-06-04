@@ -42,6 +42,9 @@ namespace IncidentMonitor.Models.Assyst
         [JsonPropertyName("stringValue")]
         public string? StringValue { get; set; }
 
+        [JsonPropertyName("booleanValue")]
+        public bool? BooleanValue { get; set; }
+
         [JsonPropertyName("customLookupValueShortCode")]
         public string? CustomLookupValueShortCode { get; set; }
 
