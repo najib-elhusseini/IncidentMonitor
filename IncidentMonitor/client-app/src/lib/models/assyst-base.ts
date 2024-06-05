@@ -1,13 +1,13 @@
 import type { RichTextFieldDto } from "./assyst";
 
+export interface DurationDto {
+    value?: number | undefined,
+    isSetToNull?: boolean | undefined
+}
 
 
 export interface GraphObjectBase {
-
-
     pseudoId?: number,
-
-
     /**
      * 
 Data Type : resolvingParameterDto
@@ -245,4 +245,3 @@ export interface AssystBaseCSGDto extends AssystBaseDto {
 
 
 
-    

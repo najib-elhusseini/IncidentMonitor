@@ -53,9 +53,9 @@ namespace IncidentMonitor.DataLayer.Helpers
                 "assignedUser[name,emailAddress]",
                 "department[id,sectionDepartmentName,sectionDepartmentShortCode,section[name]]",
                 "assignedServDept[id,name,shortCode]",
-                "actions[id,richRemarks,actionTypeId,actionType[id,name],modifyDate,dateActioned]",
+                "actions[id,richRemarks,actionTypeId,actionType[id,name],modifyDate,dateActioned,modifyId]",
                 "lastSlaClockStop",
-            };
+            };            
             foreach (var field in additionalFields)
             {
                 if (string.IsNullOrWhiteSpace(field))
@@ -63,15 +63,16 @@ namespace IncidentMonitor.DataLayer.Helpers
                     continue;
                 }
                 fields.Add(field);
-            }
-            
-            //StringBuilder sb = new StringBuilder();
-            //foreach (var field in fields)
-            //{
-            //    sb.Append(field);
-            //    sb.Append(',');
-            //}
-
+                //continue;
+                //var fieldObject = field.Split('[')[0];
+                //var currentField = fields.FirstOrDefault(f => f.StartsWith(fieldObject));
+                //if (currentField == null)
+                //{
+                //    fields.Add(field);
+                //    continue;
+                //}                
+                //currentField = field;
+            }            
             return string.Join(",", fields);
 
         }
@@ -136,7 +137,7 @@ namespace IncidentMonitor.DataLayer.Helpers
                 var responseText = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
                 var events = JsonSerializer.Deserialize<IEnumerable<EventDto>>(responseText);
-                return events; 
+                return events;
             }
             catch (Exception ex)
             {

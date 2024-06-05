@@ -4,7 +4,7 @@
  * Represents the properties of an action that may be set by the system. Properties in this class may be overwritten by the system during an update. Only properties defined by UpdateableActionDto are guaranteed to be honoured
 */
 
-import type { AssystBaseDto } from "./assyst-base";
+import type { AssystBaseDto, DurationDto } from "./assyst-base";
 
 
 export interface ActionDto extends UpdateableActionDto {
@@ -280,7 +280,7 @@ Element:<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:axios="htt
 
     actionImportProfile?: any,
     actionImportProfileId?: number,
-    actionSuccess?: boolean,   
+    actionSuccess?: boolean,
     actionType?: ActionTypeDto,
     actionTypeId?: number,
 
@@ -425,46 +425,14 @@ Element:<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:axios="htt
      */
 
     phaseId?: number,
-
     phaseSortOrder?: number,
-
-    /**
-     * 
-Data Type : durationDto
-Element:<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" minOccurs="0" name="responseTime" type="durationDto"/>
-    */
-
-    responseTime?: any,
-
+    responseTime?: DurationDto,
     serviceCost?: number,
-
-    /**
-     * 
-Data Type : durationDto
-Element:<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" minOccurs="0" name="serviceTime" type="durationDto"/>
-    */
-
-    serviceTime?: any,
-
+    serviceTime?: DurationDto,
     supplierContact?: string,
-
     supplierRef?: string,
-
-    /**
-     * 
-Data Type : durationDto
-Element:<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" minOccurs="0" name="timeToResolve" type="durationDto"/>
-    */
-
-    timeToResolve?: any,
-
-    /**
-     * 
-Data Type : durationDto
-Element:<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" minOccurs="0" name="timeToRespond" type="durationDto"/>
-    */
-
-    timeToRespond?: any,
+    timeToResolve?: DurationDto,
+    timeToRespond?: DurationDto,
 }
 
 

@@ -122,7 +122,7 @@ namespace IncidentMonitor
             {
                 _loggedInUser = value;
                 //SettingsMenuItem.IsEnabled = _loggedInUser?.IsSuperUser == true;
-                SettingsMenuItem.IsEnabled = true;// _loggedInUser?.IsSuperUser == true;
+                //SettingsMenuItem.IsEnabled = true;// _loggedInUser?.IsSuperUser == true;
             }
         }
 

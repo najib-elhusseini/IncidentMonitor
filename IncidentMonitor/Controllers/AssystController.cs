@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using IncidentMonitor.DataLayer.Data;
 using Microsoft.VisualBasic;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace IncidentMonitor.Controllers
 {
@@ -303,11 +304,11 @@ namespace IncidentMonitor.Controllers
             skip ??= 0;
             top ??= 100;
             var count = await DataLayerHelper.AssystEventsHelper.GetSearchResultCount(searchQuery);
-            var query = searchQuery; //$"{searchQuery}&$skip={skip.Value}&$top={top.Value}";
+            var query = $"{searchQuery}&$skip={skip.Value}&$top={top.Value}"; //searchQuery; 
             additionalFields ??= string.Empty;
             var fields = additionalFields.Split(',');
             var result = await DataLayerHelper.AssystEventsHelper.GetEventsAsync(query, fields);
-            
+
 
             return Ok(new
             {
@@ -317,6 +318,57 @@ namespace IncidentMonitor.Controllers
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetEventsInRange(DateTime from, DateTime? to, string? eventType)
+        {
+            var user = await CheckAuthorizationHeader(false);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            if (DataLayerHelper.AssystEventsHelper == null)
+            {
+                return BadRequest();
+            }
+
+            to ??= DateTime.Now;
+            eventType ??= "INCIDENT";
+            var events = new List<EventDto>();
+            var skip = 0;
+            var fields = "actions[id,richRemarks,actionTypeId,actionType[id,name],modifyDate,dateActioned,modifyId,actionedBy[id,name,emailAddress],serviceTime[value]]";
+            do
+            {
+                bool done = false;
+                var query = $"$skip={skip}&$top=50&eventType={eventType}&$orderby=id:desc";
+                var result = await DataLayerHelper.AssystEventsHelper.GetEventsAsync(query, fields);
+                if (result == null)
+                {
+                    break;
+                }
+                foreach (var @event in result)
+                {
+                    if (@event.DateLogged != null && @event.DateLogged < from)
+                    {
+                        done = true;
+                        break;
+                    }
+                    if (@event.DateLogged >= from && @event.DateLogged <= to)
+                    {
+                        events.Add(@event);
+                    }
+                }
+                if (done)
+                {
+                    break;
+                }
+                skip += 50;
+
+            } while (true);
+
+
+            return Ok(events);
+
+        }
 
 
 
