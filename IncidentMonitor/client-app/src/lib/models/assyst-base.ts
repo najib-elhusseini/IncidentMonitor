@@ -2,7 +2,8 @@ import type { RichTextFieldDto } from "./assyst";
 
 export interface DurationDto {
     value?: number | undefined,
-    isSetToNull?: boolean | undefined
+    isSetToNull?: boolean | undefined,
+    minutesValue?: number
 }
 
 

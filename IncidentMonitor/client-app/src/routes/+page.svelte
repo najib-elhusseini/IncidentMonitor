@@ -140,15 +140,15 @@
 	}
 
 	async function createEventAction(event: CustomEvent) {
-		const _assystEvent = event.detail.event as EventDto;		
+		const _assystEvent = event.detail.event as EventDto;
 		if (!_assystEvent) {
 			return;
 		}
-		
+
 		stopInterval();
 		contextEvent = _assystEvent;
 		contextActionType = event.detail.actionTypeId;
-		
+
 		dialog.openDialog();
 	}
 
@@ -160,7 +160,6 @@
 		}, 150);
 	}
 
-
 	async function handleSubmit(evt: CustomEvent) {
 		if (!contextEvent) {
 			return;
@@ -170,7 +169,7 @@
 		// if (!externalUserShortCode) {
 		// 	return;
 		// }
-		
+
 		isSavingEvent = true;
 		const url = `/api/assyst/posteventaction`;
 		const response = await fetch(url, {
@@ -193,6 +192,7 @@
 		isSavingEvent = false;
 	}
 
+	
 	onMount(() => {
 		if (localUser === undefined) {
 			goto('/login');
@@ -210,12 +210,10 @@
 	<Header user={data.user} {isLoading}>
 		<div class="flex w-full">
 			<div class="ml-auto my-auto flex space-x-2">
-				
 				<Link href="/assyst/event-search">
 					<i class="bi bi-search"></i>
 					<span>Assyst Event Search </span>
 				</Link>
-
 			</div>
 		</div>
 	</Header>

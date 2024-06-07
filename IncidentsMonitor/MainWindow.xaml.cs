@@ -33,7 +33,8 @@ namespace IncidentMonitor
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string _baseUrl = "https://localhost:7217/api";
+        public static string InstanceBaseUrl => "https://localhost:7217/api";
+
         bool _firstRun = true;
         ApplicationUserViewModel? _loggedInUser;
         internal static MainWindow? Instance { get; private set; }
@@ -169,24 +170,6 @@ namespace IncidentMonitor
             }
             LoggedInUser = loginDialog.LoggedInUser;
 
-            //if (
-            //    DataLayerHelper.RemedyForceSettings == null
-            //    ||
-            //    DataLayerHelper.RemedyForceSettingsHelper == null
-            //    )
-            //{
-            //    //SettingsValid = false;
-            //    return;
-            //}
-
-            //if (!DataLayerHelper.RemedyForceSettings.ValidateSettings())
-            //{
-            //    //SettingsValid = false;
-            //    return;
-
-            //}
-            //DefaultCompany = await DataLayerHelper.CompaniesHelper.GetDefaultCompanyAsync();
-
 
             await CheckIncidents();
             Timer.Interval = TimeSpan.FromMinutes(TimerInterval);
@@ -225,7 +208,7 @@ namespace IncidentMonitor
                 return;
             }
             Events.Clear();
-            var url = $"{_baseUrl}/assyst/GetTodayIncidents";
+            var url = $"{InstanceBaseUrl}/assyst/GetTodayIncidents";
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization =
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", LoggedInUser.Token);
@@ -245,9 +228,9 @@ namespace IncidentMonitor
                 var responseText = await response.Content.ReadAsStringAsync();
                 response.EnsureSuccessStatusCode();
                 var _events = JsonSerializer.Deserialize<IEnumerable<EventDto>>(responseText);
-                if(_events == null || !_events.Any())
+                if (_events == null || !_events.Any())
                 {
-                    return; 
+                    return;
 
                 }
                 foreach (var @event in _events)
@@ -389,39 +372,7 @@ namespace IncidentMonitor
 
         }
 
-        private void CompanyMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var companyWindow = new Company(DataLayerHelper.CompaniesHelper)
-            {
-                Owner = this,
-            };
-            companyWindow.ShowDialog();
-        }
 
-        private void RemedyForceMenuItem_Clicked(object sender, RoutedEventArgs e)
-        {
-            var rfWindow = new Settings.RemedyForceSettingsWindow(DataLayerHelper.RemedyForceSettingsHelper)
-            {
-                Owner = this,
-            };
-            rfWindow.ShowDialog();
-        }
-
-        private void UsersMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var usersWindow = new UsersWindow(DataLayerHelper.NotificationUsersHelper)
-            {
-                Owner = this
-            };
-            usersWindow.ShowDialog();
-        }
-
-        private void SmtpSettingsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var smtpWindow = new SmtpSettingsWindow(DataLayerHelper.SmtpSettingsHelper) { Owner = this, };
-            smtpWindow.ShowDialog();
-
-        }
 
         private void LogoutMenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -433,16 +384,16 @@ namespace IncidentMonitor
         private void ChangePasswordMenuItem_Click(object sender, RoutedEventArgs e)
         {
             // This should never occur, but better be safe than sorry
-            //if (LoggedInUser == null)
-            //{
-            throw new NotImplementedException();
-            //}
+            if (LoggedInUser == null)
+            {
+                return;
+            }
 
-            //var dialog = new ChangePasswordDialog(DataLayerHelper.NotificationUsersHelper, LoggedInUser)
-            //{
-            //    Owner = this,
-            //};
-            //dialog.ShowDialog();
+            var dialog = new ChangePasswordDialog(LoggedInUser)
+            {
+                Owner = this,
+            };
+            dialog.ShowDialog();
 
         }
 

@@ -29,12 +29,10 @@
             <MenuItem Header="Settings" x:Name="SettingsMenuItem"
                       IsEnabled="False"
                       >
-                <MenuItem Header="Company" Click="CompanyMenuItem_Click"/>
-                <MenuItem Header="Users to notify" Click="UsersMenuItem_Click"/>
+                
                 <MenuItem Header="Notification Settings" Click="NotificationSettingsMenuItem_Click"/>
-                <Separator/>
-                <MenuItem Header="SMTP Settings" Click="SmtpSettingsMenuItem_Click"/>
-                <MenuItem Header="RemedyForce Settings" Click="RemedyForceMenuItem_Clicked"/>
+                
+                
             </MenuItem>
         </Menu>
         <Grid>

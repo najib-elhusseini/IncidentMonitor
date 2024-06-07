@@ -49,7 +49,7 @@ namespace IncidentMonitor.Models.Assyst
         /// </summary>
 
         [JsonPropertyName("actionedBy")]
-        public object? ActionedBy { get; set; }
+        public AssystUserDto? ActionedBy { get; set; }
 
 
         [JsonPropertyName("actionedById")]

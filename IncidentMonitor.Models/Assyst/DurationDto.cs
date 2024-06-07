@@ -14,5 +14,14 @@ namespace IncidentMonitor.Models.Assyst
 
         [JsonPropertyName("isSetToNull")]
         public bool? IsSetToNull { get; set; }
+
+        [JsonPropertyName("minutesValue")]
+        public double? MinutesValue
+        {
+            get
+            {
+                return Value / 60000;
+            }
+        }
     }
 }

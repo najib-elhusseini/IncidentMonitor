@@ -319,6 +319,40 @@ namespace IncidentMonitor.Controllers
 
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ChangePasswordAsync()
+        {
+            var user = await CheckAuthorizationHeader(true);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+
+            var id = Request.Form["id"].ToString();
+            var password = Request.Form["password"].ToString();
+            var newPasswrord = Request.Form.TryParseString("newPassword");
+            if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(newPasswrord))
+            {
+                return BadRequest();
+            }
+            ApplicationUser? contextUser = await DataLayerHelper.UsersHelper.GetAsync(id);
+            if (contextUser == null)
+            {
+                return NotFound();
+            }
+
+            var result = await UserManager.ChangePasswordAsync(contextUser, password,newPasswrord);
+           
+
+            if (result.Succeeded)
+            {
+                return Ok();
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeleteUser()
         {

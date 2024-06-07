@@ -5,6 +5,7 @@
 */
 
 import type { AssystBaseDto, DurationDto } from "./assyst-base";
+import type { EventDto } from "./assyst-event";
 
 
 export interface ActionDto extends UpdateableActionDto {
@@ -117,11 +118,7 @@ Element:<xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:axios="htt
     */
 
     emailRecipients?: any,
-    /**
-     * Ref object discarded 
-     * <xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" minOccurs="0" ref="event"/>
-     */
-
+    event?:EventDto
     eventId?: number,
 
     eventIncDataVersion?: number,

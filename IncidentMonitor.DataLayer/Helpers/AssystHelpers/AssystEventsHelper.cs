@@ -27,7 +27,7 @@ namespace IncidentMonitor.DataLayer.Helpers
         {
         }
 
-        private string GetEventFields(params string[] additionalFields)
+        private string GetEventFields(bool replaceFields = false, params string[] additionalFields)
         {
             var fields = new List<string>()
             {
@@ -55,7 +55,11 @@ namespace IncidentMonitor.DataLayer.Helpers
                 "assignedServDept[id,name,shortCode]",
                 "actions[id,richRemarks,actionTypeId,actionType[id,name],modifyDate,dateActioned,modifyId]",
                 "lastSlaClockStop",
-            };            
+            };
+            if (replaceFields)
+            {
+                fields = new List<string>();
+            }
             foreach (var field in additionalFields)
             {
                 if (string.IsNullOrWhiteSpace(field))
@@ -63,16 +67,7 @@ namespace IncidentMonitor.DataLayer.Helpers
                     continue;
                 }
                 fields.Add(field);
-                //continue;
-                //var fieldObject = field.Split('[')[0];
-                //var currentField = fields.FirstOrDefault(f => f.StartsWith(fieldObject));
-                //if (currentField == null)
-                //{
-                //    fields.Add(field);
-                //    continue;
-                //}                
-                //currentField = field;
-            }            
+            }
             return string.Join(",", fields);
 
         }
@@ -125,9 +120,9 @@ namespace IncidentMonitor.DataLayer.Helpers
             }
         }
 
-        public async Task<IEnumerable<EventDto>?> GetEventsAsync(string query, params string[] additionalFields)
+        public async Task<IEnumerable<EventDto>?> GetEventsAsync(string query, bool replaceFields = false, params string[] additionalFields)
         {
-            var fields = GetEventFields(additionalFields);
+            var fields = GetEventFields(replaceFields, additionalFields);
             query = $"{query}&fields={fields}";
             try
             {
@@ -434,6 +429,24 @@ namespace IncidentMonitor.DataLayer.Helpers
             var responseText = await response.Content.ReadAsStringAsync();
             response.EnsureSuccessStatusCode();
             return JsonSerializer.Deserialize<IEnumerable<AssystActionDto>?>(responseText);
+        }
+
+
+        public async Task<IEnumerable<AssystActionDto>?> GetActions(string? searchParameters)
+        {
+            var endPoint = "actions";
+            if(searchParameters != null)
+            {
+                endPoint = $"{endPoint}?{searchParameters}";
+            }
+
+            var (client, url) = GetHttpClient(endPoint);
+
+            var response = await client.GetAsync(url);
+            var responseText = await response.Content.ReadAsStringAsync();
+            response.EnsureSuccessStatusCode();
+            return JsonSerializer.Deserialize<IEnumerable<AssystActionDto>?>(responseText);
+
         }
     }
 }

@@ -19,6 +19,7 @@
 	export let searchHint = 'Search';
 	let isMenuOpen = false;
 	let isAdvancedSearchOpen = false;
+	let table: HTMLTableElement;
 
 	const dispatch = createEventDispatcher();
 
@@ -31,6 +32,10 @@
 				value
 			});
 		}
+	}
+
+	export function exportTableHtml() {
+		return table.innerHTML;
 	}
 
 	function toggleAdvancedSearch() {
@@ -194,7 +199,7 @@
 </div>
 
 <div class="bg-white border border-slate-300 shadow-md my-1">
-	<table class="w-full border-collapse">
+	<table class="w-full border-collapse" bind:this={table}>
 		<thead class="bg-gray-500 text-gray-50 border-b-2 border-b-gray-700">
 			<slot name="header" />
 		</thead>

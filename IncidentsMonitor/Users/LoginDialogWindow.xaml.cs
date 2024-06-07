@@ -29,7 +29,7 @@ namespace IncidentMonitor
         //private NotificationUsersHelper usersHelper;
 
         public ApplicationUserViewModel? LoggedInUser { get; set; } = null;
-        private const string _baseUrl = "https://localhost:7217/api";
+        
 
 
 
@@ -77,7 +77,7 @@ namespace IncidentMonitor
                 return;
             }
 
-            var url = $"{_baseUrl}/users/login";
+            var url = $"{MainWindow.InstanceBaseUrl}/users/login";
             var client = new HttpClient();
             var content = new FormUrlEncodedContent(new[]
             {

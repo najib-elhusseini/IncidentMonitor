@@ -1,9 +1,12 @@
 ﻿using IncidentMonitor.DataLayer.Helpers;
+using IncidentMonitor.DataLayer.Models;
 using IncidentMonitor.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,16 +24,20 @@ namespace IncidentMonitor
     /// </summary>
     public partial class ChangePasswordDialog : Window
     {
-        private NotificationUsersHelper Helper { get; set; }
 
-        private NotificationUser LoggedInUser { get; set; }
-        public ChangePasswordDialog(NotificationUsersHelper helper, NotificationUser loggedInUser)
+
+        private ApplicationUserViewModel LoggedInUser { get; set; }
+
+
+
+        public ChangePasswordDialog(ApplicationUserViewModel loggedInUser)
         {
-            Helper = helper;
             LoggedInUser = loggedInUser;
             InitializeComponent();
             UserNameTextBlock.Text = loggedInUser.Email;
         }
+
+
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
@@ -45,23 +52,29 @@ namespace IncidentMonitor
 
         async void TryChangePassword()
         {
-            var user = await Helper.Find(LoggedInUser.Id) ?? throw new NotImplementedException();
-
-            if (string.IsNullOrEmpty(OldPasswordBox.Password) || user.AppPassword != OldPasswordBox.Password)
+            var url = $"{MainWindow.InstanceBaseUrl}/users/ChangePassword";
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization =
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", LoggedInUser.Token);
+            var content = new FormUrlEncodedContent(new[]
+           {
+                new KeyValuePair<string, string>("id",LoggedInUser.Id),
+                new KeyValuePair<string, string>("password",OldPasswordBox.Password),
+                new KeyValuePair<string, string>("newPassword",NewPasswordBox.Password)
+            });
+            ConfirmButton.IsEnabled = false;
+            var response = await client.PostAsync(url, content);
+            var responseText = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode)
             {
-                ErrorTextBlock.Text = "Please provide the current password and try again";
+                DialogResult = true;
                 return;
             }
-
-            if (NewPasswordBox.Password != ConfirmPasswordBox.Password)
+            else
             {
-                ErrorTextBlock.Text = "The 'New Password' and 'Confirm Password' fields do not match";
-                return;
+                ErrorTextBlock.Text = "Password change failed";
             }
-            var encrypted = await Helper.EncryptAsync(NewPasswordBox.Password);
-            user.AppPassword = Convert.ToBase64String(encrypted);
-            await Helper.UpdateAsync(user);
-            DialogResult = true;
+            ConfirmButton.IsEnabled = true;
         }
 
         private void OldPasswordBox_KeyDown(object sender, KeyEventArgs e)

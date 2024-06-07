@@ -174,6 +174,9 @@ namespace IncidentMonitor.Models.Assyst
          * <xs:element xmlns:xs="http://www.w3.org/2001/XMLSchema" minOccurs="0" ref="event"/>
          */
 
+        [JsonPropertyName("event")]
+        public EventDto? Event { get; set; }
+
 
         [JsonPropertyName("eventId")]
         public int? EventId { get; set; }

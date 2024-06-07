@@ -14,6 +14,7 @@ using System.Xml.Linq;
 using IncidentMonitor.DataLayer.Data;
 using Microsoft.VisualBasic;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using System.Diagnostics;
 
 namespace IncidentMonitor.Controllers
 {
@@ -290,13 +291,14 @@ namespace IncidentMonitor.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> QueryEvents(string searchQuery, int? skip, int? top, string? additionalFields)
+        public async Task<IActionResult> QueryEvents(string searchQuery, int? skip, int? top, bool? replaceFields, string? additionalFields)
         {
             var user = await CheckAuthorizationHeader(false);
             if (user == null)
             {
                 return Unauthorized();
             }
+            replaceFields ??= false;
             if (DataLayerHelper.AssystEventsHelper == null)
             {
                 return BadRequest();
@@ -307,7 +309,7 @@ namespace IncidentMonitor.Controllers
             var query = $"{searchQuery}&$skip={skip.Value}&$top={top.Value}"; //searchQuery; 
             additionalFields ??= string.Empty;
             var fields = additionalFields.Split(',');
-            var result = await DataLayerHelper.AssystEventsHelper.GetEventsAsync(query, fields);
+            var result = await DataLayerHelper.AssystEventsHelper.GetEventsAsync(query, replaceFields.Value, fields);
 
 
             return Ok(new
@@ -340,7 +342,7 @@ namespace IncidentMonitor.Controllers
             {
                 bool done = false;
                 var query = $"$skip={skip}&$top=50&eventType={eventType}&$orderby=id:desc";
-                var result = await DataLayerHelper.AssystEventsHelper.GetEventsAsync(query, fields);
+                var result = await DataLayerHelper.AssystEventsHelper.GetEventsAsync(query, true, fields);
                 if (result == null)
                 {
                     break;
@@ -371,6 +373,70 @@ namespace IncidentMonitor.Controllers
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetActionsInRange(DateTime from, DateTime? to)
+        {
+            
+            int[] userIds = new[] { 206, 917, 916 };
+            var user = await CheckAuthorizationHeader(false);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            if (DataLayerHelper.AssystEventsHelper == null)
+            {
+                return BadRequest();
+            }
+
+            to ??= DateTime.Now;
+            bool done = false;
+            var skip = 0;
+            var allActions = new List<AssystActionDto>();
+            var sw = new Stopwatch();
+            sw.Start();
+            do
+            {
+                var searchParams = $"$orderby=id:desc&$skip={skip}&fields=[dateActioned,richRemarks,actionType[name],serviceTime,actionedBy[name,emailAddress],event[formattedReference]]&disableExceptionOnMaxRecords=true";
+                var @actions = await DataLayerHelper.AssystEventsHelper.GetActions(searchParams);
+                if (@actions == null)
+                {                    
+                    break;
+                }
+                foreach (var @action in @actions)
+                {
+
+                    if (action.DateActioned != null && action.DateActioned < from)
+                    {
+                        done = true;
+                        break;
+                    }
+
+                    if (
+                        action.DateActioned == null ||
+                        action.ActionType == null ||
+                        string.IsNullOrWhiteSpace(action.ActionType.ShortCode) ||
+                        !action.ActionType.ShortCode.Contains("TIME REGISTRATION") ||
+                        action.ServiceTime == null||
+                        !userIds.Contains(action.ActionedById ?? 0)
+                        )
+                    {
+                        continue;
+                    }
+                   
+
+
+                    if (action.DateActioned >= from && action.DateActioned <= to)
+                    {
+                        allActions.Add(action);
+                    }
+                }
+                skip += 500;
+            } while (!done);
+            sw.Stop();
+            var ellapses = sw.ElapsedMilliseconds / 1000 * 60;
+            return Ok(allActions);
+
+        }
 
     }
 }
